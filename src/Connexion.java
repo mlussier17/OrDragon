@@ -11,7 +11,7 @@ public class Connexion implements Runnable{
 
     public void run(){
         connect();
-        NodeReader.node(socket);
+        Reader.node(socket);
         disconnect();
     }
 

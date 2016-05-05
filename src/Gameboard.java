@@ -19,9 +19,3 @@ public class Gameboard extends Application {
         //Group group = new Group();
     }
 }
-
-class drawingCircle implements Runnable{
-    public void run(){
-
-    }
-}

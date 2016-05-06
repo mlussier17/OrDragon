@@ -5,10 +5,13 @@
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import javafx.scene.paint.Color;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -26,10 +29,12 @@ public class Gameboard extends Application {
             Group group = new Group();
             ArrayList<Noeud> nodes = Noeud.getList();
             tServ.join();
+            group.getChildren().add(new ImageView(new Image("carte02.png")));
             for (int i = 0; i < nodes.size(); ++i) {
                 Circle cercle = new Circle(nodes.get(i).getCenterX(), nodes.get(i).getCenterY(), nodes.get(i).getRadius());
                 cercle.setStroke(Color.BLACK);
-                cercle.setFill(Color.BLACK);
+                if (nodes.get(i).getConstruisible()) cercle.setFill(Color.GREEN);
+                else cercle.setFill(Color.RED);
                 cercle.setStrokeWidth(1);
                 group.getChildren().add(cercle);
 
@@ -44,5 +49,8 @@ public class Gameboard extends Application {
         catch(InterruptedException ie){
 
         }
+//        catch(IOException ioe){
+//
+//        }
     }
 }

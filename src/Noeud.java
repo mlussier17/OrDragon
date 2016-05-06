@@ -11,7 +11,7 @@ public class Noeud extends Circle{
     private static ArrayList<Noeud> nodeList = new ArrayList();
 
     Noeud(int num, int x, int y, int constr){
-        super(x, y, 5);
+        super(x, y, 10);
         number=num;
         if (constr == 1) construisible = true;
         else construisible = false;

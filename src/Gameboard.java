@@ -49,8 +49,5 @@ public class Gameboard extends Application {
         catch(InterruptedException ie){
 
         }
-//        catch(IOException ioe){
-//
-//        }
     }
 }

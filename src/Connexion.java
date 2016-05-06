@@ -12,6 +12,7 @@ public class Connexion implements Runnable{
     public void run(){
         connect();
         Reader.node(socket);
+        //Reader.lines(socket);
         disconnect();
     }
 

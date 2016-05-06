@@ -9,6 +9,7 @@ import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import javafx.scene.paint.Color;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Gameboard extends Application {
@@ -18,24 +19,30 @@ public class Gameboard extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        Connexion connexion = new Connexion();
-        Thread tServ = new Thread(connexion);
-        tServ.start();
-        Group group = new Group();
-        ArrayList<Noeud> nodes = Noeud.getList();
-        for (int i = 0; i < nodes.size(); ++i){
-            Circle cercle = new Circle(nodes.get(i).getCenterX(),nodes.get(i).getCenterY(),nodes.get(i).getRadius());
-            cercle.setStroke(Color.BLACK);
-            cercle.setFill(null);
-            cercle.setStrokeWidth(1);
-            group.getChildren().add(cercle);
+        try {
+            Connexion connexion = new Connexion();
+            Thread tServ = new Thread(connexion);
+            tServ.start();
+            Group group = new Group();
+            ArrayList<Noeud> nodes = Noeud.getList();
+            tServ.join();
+            for (int i = 0; i < nodes.size(); ++i) {
+                Circle cercle = new Circle(nodes.get(i).getCenterX(), nodes.get(i).getCenterY(), nodes.get(i).getRadius());
+                cercle.setStroke(Color.BLACK);
+                cercle.setFill(Color.BLACK);
+                cercle.setStrokeWidth(1);
+                group.getChildren().add(cercle);
+
+            }
+            Scene scene = new Scene(group);
+            primaryStage.setScene(scene);
+            primaryStage.setWidth(1600);
+            primaryStage.setHeight(900);
+            primaryStage.show();
 
         }
-        Scene scene = new Scene(group);
-        primaryStage.setScene(scene);
-        primaryStage.setWidth(1600);
-        primaryStage.setHeight(900);
-        primaryStage.show();
+        catch(InterruptedException ie){
 
+        }
     }
 }

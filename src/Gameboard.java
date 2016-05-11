@@ -7,13 +7,9 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 import javafx.scene.paint.Color;
-
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class Gameboard extends Application {

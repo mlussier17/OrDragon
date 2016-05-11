@@ -44,7 +44,6 @@ public class Gameboard extends Application {
             }
 
             for (int i = 0; i < nodes.size(); ++i) {
-                //Circle cercle = new Circle(nodes.get(i).getCenterX(), nodes.get(i).getCenterY(), nodes.get(i).getRadius());
                 nodes.get(i).setStroke(Color.BLACK);
                 if (nodes.get(i).getConstruisible()) nodes.get(i).setFill(Color.GREEN);
                 else nodes.get(i).setFill(Color.RED);

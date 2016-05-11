@@ -1,5 +1,6 @@
 import javafx.application.Platform;
 import javafx.scene.Scene;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
@@ -19,17 +20,6 @@ public class Reader implements Runnable{
     final static private String IP = "149.56.47.97";
     final static private int PORT = 51006;
     private static Socket pSocket;
-
-    class foobar implements Runnable {
-        Circle piece;
-        foobar(Circle cercle){
-            piece = cercle;
-        }
-        public void run(){
-            System.out.println("Poil de poche");
-            piece.setFill(Color.YELLOW);
-        }
-    }
     public void run(){
         try {
             InetSocketAddress adress = new InetSocketAddress(IP, PORT);
@@ -42,18 +32,51 @@ public class Reader implements Runnable{
                 String[] tokens = (line = posReader.readLine()).split(" ");
                 for (int i = 0; i < tokens.length; ++i){
                     String[] deplacement = tokens[i].split(":");
-                    System.out.println(deplacement[0] + "     " + deplacement[1]);
-                    if(deplacement[1].equals("P")) {
-                        Circle piece = nodes.get(Integer.parseInt(deplacement[0]));
-                        System.out.println(piece);
-                        Platform.runLater(() -> piece.setFill(Color.YELLOW));
-                        //Platform.runLater(new foobar(piece));
-                        try {
-                            Thread.sleep(10000);
-                        } catch (InterruptedException ie) {}
-
-                        System.out.println(nodes.get(Integer.parseInt(deplacement[0])));
+                    switch (deplacement[1]){
+                        case "P":
+                            Circle piece = nodes.get(Integer.parseInt(deplacement[0]));
+                            Platform.runLater(() -> piece.setFill(Color.YELLOW));
+//                            try {
+//                                Thread.sleep(1000);
+//                            } catch (InterruptedException ie) {}
+                            break;
+                        case "J":
+                            Circle player = nodes.get(Integer.parseInt(deplacement[0]));
+                            Platform.runLater(() -> player.setFill(Color.WHITE));
+//                            try {
+//                                Thread.sleep(1000);
+//                            } catch (InterruptedException ie) {}
+                            break;
+                        case "T":
+                            Circle troll = nodes.get(Integer.parseInt(deplacement[0]));
+                            Platform.runLater(() -> troll.setFill(Color.BLUE));
+//                            try {
+//                                Thread.sleep(1000);
+//                            } catch (InterruptedException ie) {}
+                            break;
+                        case "G":
+                            Circle gobelin = nodes.get(Integer.parseInt(deplacement[0]));
+                            Platform.runLater(() -> gobelin.setFill(Color.DARKGREEN));
+//                            try {
+//                                Thread.sleep(1000);
+//                            } catch (InterruptedException ie) {}
+                            break;
+                        case "M":
+                            Circle dew = nodes.get(Integer.parseInt(deplacement[0]));
+                            Platform.runLater(() -> dew.setFill(Color.FUCHSIA));
+//                            try {
+//                                Thread.sleep(1000);
+//                            } catch (InterruptedException ie) {}
+                            break;
+                        case "D":
+                            Circle doritos = nodes.get(Integer.parseInt(deplacement[0]));
+                            Platform.runLater(() -> doritos.setFill(Color.ORANGE));
+//                            try {
+//                                Thread.sleep(1000);
+//                            } catch (InterruptedException ie) {}
+                            break;
                     }
+                    System.out.println(deplacement[0] + deplacement[1]);
                 }
                 write.println("");
             }
@@ -72,7 +95,6 @@ public class Reader implements Runnable{
             while ((line = reader.readLine()) != null){
                 if (line.trim().length() < 1) break;
                 String[] tokens = line.split(" ");
-                System.out.println(line);
                 Noeud node = new Noeud(Integer.parseInt(tokens[0]), Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2]),Integer.parseInt(tokens[3]));
                 Noeud.add(node);
             }
@@ -89,7 +111,6 @@ public class Reader implements Runnable{
             while((line = reader.readLine()) != null){
                 String[] tokens = line.split(" ");
                     for (int i = 1; i < tokens.length; ++i) {
-                        System.out.println(tokens[i]);
                         Chemin line = new Chemin(Integer.parseInt(tokens[0]), Integer.parseInt(tokens[i]));
                         Chemin.add(line);
                     }

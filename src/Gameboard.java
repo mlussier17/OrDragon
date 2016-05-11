@@ -31,7 +31,7 @@ public class Gameboard extends Application {
             ArrayList<Noeud> nodes = Noeud.getList();
             ArrayList<Chemin> lines = Chemin.getList();
             tServ.join();
-            group.getChildren().add(new ImageView(new Image("carte02.png")));
+            group.getChildren().add(new ImageView(new Image("http://prog101.com/travaux/dragon/images/carte03.png")));
             for(int i = 0; i < lines.size(); ++i){
                 double sourceX = nodes.get(lines.get(i).getStart()).getCenterX();
                 double destX = nodes.get(lines.get(i).getDest()).getCenterX();
@@ -44,12 +44,12 @@ public class Gameboard extends Application {
             }
 
             for (int i = 0; i < nodes.size(); ++i) {
-                Circle cercle = new Circle(nodes.get(i).getCenterX(), nodes.get(i).getCenterY(), nodes.get(i).getRadius());
-                cercle.setStroke(Color.BLACK);
-                if (nodes.get(i).getConstruisible()) cercle.setFill(Color.GREEN);
-                else cercle.setFill(Color.RED);
-                cercle.setStrokeWidth(1);
-                group.getChildren().add(cercle);
+                //Circle cercle = new Circle(nodes.get(i).getCenterX(), nodes.get(i).getCenterY(), nodes.get(i).getRadius());
+                nodes.get(i).setStroke(Color.BLACK);
+                if (nodes.get(i).getConstruisible()) nodes.get(i).setFill(Color.GREEN);
+                else nodes.get(i).setFill(Color.RED);
+                nodes.get(i).setStrokeWidth(1);
+                group.getChildren().add(nodes.get(i));
             }
 
             Scene scene = new Scene(group);
@@ -58,6 +58,10 @@ public class Gameboard extends Application {
             primaryStage.setHeight(900);
             primaryStage.show();
 
+            Reader reader = new Reader();
+            Thread tReader = new Thread(reader);
+            tReader.setDaemon(true);
+            tReader.start();
         }
         catch(InterruptedException ie){
             System.err.println("Reading nodes from server has been interrupted");

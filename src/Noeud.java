@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class Noeud extends Circle{
     private int number;
     private Boolean construisible;
-    private static ArrayList<Noeud> nodeList = new ArrayList();
+    private static ArrayList<Noeud> nodeList = new ArrayList<Noeud>();
 
     Noeud(int num, int x, int y, int constr){
         super(x, y, 10);

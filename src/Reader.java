@@ -20,6 +20,21 @@ public class Reader implements Runnable{
     final static private String IP = "149.56.47.97";
     final static private int PORT = 51006;
     private static Socket pSocket;
+    private static ArrayList<Noeud> usedNodes = new ArrayList<Noeud> ();
+    private static Color col = null;
+
+    public class Couleur implements Runnable{
+        Color col = null;
+        Noeud cercle = null;
+        Couleur(Color couleur, Noeud cerc){
+            col = couleur;
+            cercle = cerc;
+        }
+        public void run(){
+            cercle.setFill(col);
+        }
+    }
+
     public void run(){
         try {
             InetSocketAddress adress = new InetSocketAddress(IP, PORT);
@@ -28,56 +43,30 @@ public class Reader implements Runnable{
             BufferedReader posReader = new BufferedReader(new InputStreamReader(pSocket.getInputStream()));
             PrintWriter write = new PrintWriter(new OutputStreamWriter(pSocket.getOutputStream()));
             ArrayList<Noeud> nodes = Noeud.getList();
+
             while(true){
                 String[] tokens = (line = posReader.readLine()).split(" ");
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        for (Noeud noeud : nodes) { noeud.resetEntities();} // Reset nodes;
+                    }
+                });
                 for (int i = 0; i < tokens.length; ++i){
                     String[] deplacement = tokens[i].split(":");
-                    switch (deplacement[1]){
-                        case "P":
-                            Circle piece = nodes.get(Integer.parseInt(deplacement[0]));
-                            Platform.runLater(() -> piece.setFill(Color.YELLOW));
-//                            try {
-//                                Thread.sleep(1000);
-//                            } catch (InterruptedException ie) {}
-                            break;
-                        case "J":
-                            Circle player = nodes.get(Integer.parseInt(deplacement[0]));
-                            Platform.runLater(() -> player.setFill(Color.WHITE));
-//                            try {
-//                                Thread.sleep(1000);
-//                            } catch (InterruptedException ie) {}
-                            break;
-                        case "T":
-                            Circle troll = nodes.get(Integer.parseInt(deplacement[0]));
-                            Platform.runLater(() -> troll.setFill(Color.BLUE));
-//                            try {
-//                                Thread.sleep(1000);
-//                            } catch (InterruptedException ie) {}
-                            break;
-                        case "G":
-                            Circle gobelin = nodes.get(Integer.parseInt(deplacement[0]));
-                            Platform.runLater(() -> gobelin.setFill(Color.DARKGREEN));
-//                            try {
-//                                Thread.sleep(1000);
-//                            } catch (InterruptedException ie) {}
-                            break;
-                        case "M":
-                            Circle dew = nodes.get(Integer.parseInt(deplacement[0]));
-                            Platform.runLater(() -> dew.setFill(Color.FUCHSIA));
-//                            try {
-//                                Thread.sleep(1000);
-//                            } catch (InterruptedException ie) {}
-                            break;
-                        case "D":
-                            Circle doritos = nodes.get(Integer.parseInt(deplacement[0]));
-                            Platform.runLater(() -> doritos.setFill(Color.ORANGE));
-//                            try {
-//                                Thread.sleep(1000);
-//                            } catch (InterruptedException ie) {}
-                            break;
-                    }
+
+                    Noeud piece = nodes.get(Integer.parseInt(deplacement[0]));
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                             new Entity(deplacement[1], piece);
+                        }
+                    });
+
                     System.out.println(deplacement[0] + deplacement[1]);
                 }
+
+
                 write.println("");
             }
 

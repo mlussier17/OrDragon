@@ -23,6 +23,10 @@ public class Gameboard extends Application {
             Connexion connexion = new Connexion();
             Thread tServ = new Thread(connexion);
             tServ.start();
+
+            // Load Images
+            Entity.LoadImages();
+
             Group group = new Group();
             ArrayList<Noeud> nodes = Noeud.getList();
             ArrayList<Chemin> lines = Chemin.getList();
@@ -40,11 +44,12 @@ public class Gameboard extends Application {
             }
 
             for (int i = 0; i < nodes.size(); ++i) {
-                nodes.get(i).setStroke(Color.BLACK);
-                if (nodes.get(i).getConstruisible()) nodes.get(i).setFill(Color.GREEN);
-                else nodes.get(i).setFill(Color.RED);
-                nodes.get(i).setStrokeWidth(1);
-                group.getChildren().add(nodes.get(i));
+                Noeud node = nodes.get(i);
+                node.setStroke(Color.BLACK);
+                if (node.getConstruisible()) nodes.get(i).setFill(Color.GREEN);
+                else node.setFill(Color.RED);
+                node.setStrokeWidth(1);
+                group.getChildren().addAll(node,node.getPane());
             }
 
             Scene scene = new Scene(group);

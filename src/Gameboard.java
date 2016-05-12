@@ -48,6 +48,17 @@ public class Gameboard extends Application {
             }
 
             Scene scene = new Scene(group);
+
+            Bouton btn1 = new Bouton(50, 50, 100, 50, 3);
+
+            group.getChildren().addAll(btn1);
+
+            primaryStage.setScene(scene);
+            primaryStage.setWidth(500);
+            primaryStage.setHeight(250);
+            primaryStage.setTitle("Création de formes géométriques");
+            primaryStage.show();
+
             primaryStage.setScene(scene);
             primaryStage.setWidth(1600);
             primaryStage.setHeight(900);

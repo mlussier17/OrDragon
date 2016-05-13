@@ -1,13 +1,10 @@
-import com.sun.javafx.cursor.*;
 import javafx.application.Platform;
-import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
 
 import java.util.ArrayList;
 
@@ -35,7 +32,29 @@ public class Noeud extends Circle{
 
         // On button click
         addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-            Platform.runLater(() -> this.setFill(Color.BLACK));
+
+            System.out.println("J'ai clicker -> " + this.getNumber());
+            //Platform.runLater(() -> this.setFill(Color.BLACK));
+        });
+
+        addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
+            if (this.getConstruisible()) Platform.runLater(() -> this.setFill(Color.color(0,0.8,0)));
+            else Platform.runLater(() -> this.setFill(Color.color(0.8, 0, 0)));
+        });
+
+        addEventHandler(MouseEvent.MOUSE_EXITED, e -> {
+            if (this.getConstruisible()) Platform.runLater(() -> this.setFill(Color.GREEN));
+            else Platform.runLater(() -> this.setFill(Color.RED));
+        });
+
+        addEventHandler(MouseEvent.MOUSE_PRESSED, e -> {
+            if (this.getConstruisible()) Platform.runLater(() -> this.setFill(Color.color(0,0.8,0,0.8)));
+            else Platform.runLater(() -> this.setFill(Color.color(0.8, 0, 0, 0.8)));
+        });
+
+        addEventHandler(MouseEvent.MOUSE_RELEASED, e -> {
+            if (this.getConstruisible()) Platform.runLater(() -> this.setFill(Color.color(0,0.8,0,1)));
+            else Platform.runLater(() -> this.setFill(Color.color(0.8, 0, 0, 1)));
         });
     }
 
@@ -71,7 +90,12 @@ public class Noeud extends Circle{
                 iv.setY(getCenterY() - RADIUS - IVMARGIN - iv.getImage().getHeight());
             }
             else {
+                int width = (int)iv.getImage().getWidth() * ivPlayer.size() + ivPlayer.size() + 1;
 
+                for (int i = 0; i < ivPlayer.size(); i++){
+                    ivPlayer.get(i).setX((getCenterX() - (width / 2)) + ((i + 1)* IVMARGIN) + (i * iv.getImage().getHeight()));
+                    ivPlayer.get(i).setY(getCenterY() - RADIUS - IVMARGIN - iv.getImage().getHeight());
+                }
             }
         }
 

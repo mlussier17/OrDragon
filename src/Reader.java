@@ -17,7 +17,7 @@ public class Reader implements Runnable{
     private static BufferedReader reader;
     private static String line = null;
 
-    final static private String IP = "149.56.47.97";
+    final static public String IP = "149.56.47.97";
     final static private int PORT = 51006;
     private static Socket pSocket;
     private static ArrayList<Noeud> usedNodes = new ArrayList<Noeud> ();
@@ -69,7 +69,6 @@ public class Reader implements Runnable{
 
                 write.println("");
             }
-
         }
         catch(IOException ioe){
             ioe.printStackTrace();

@@ -10,16 +10,25 @@ import javafx.scene.image.ImageView;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 import javafx.scene.paint.Color;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 public class Gameboard extends Application {
     public static void main(String[] args) {
         launch(args);
     }
+    public final static String TEAM = "LesDieuxGrec";
+    public static String LOCALIP;
 
     @Override
     public void start(Stage primaryStage) {
         try {
+            // Get local address
+            LOCALIP = InetAddress.getLocalHost().getHostAddress();
+            System.out.println("L'adresse du client -> " + LOCALIP);
+
             Connexion connexion = new Connexion();
             Thread tServ = new Thread(connexion);
             tServ.start();
@@ -54,25 +63,34 @@ public class Gameboard extends Application {
 
             Scene scene = new Scene(group);
 
-            Bouton btn1 = new Bouton(50, 50, 100, 50, 3);
-
-            group.getChildren().addAll(btn1);
-
-            primaryStage.setScene(scene);
-            primaryStage.setWidth(500);
-            primaryStage.setHeight(250);
-            primaryStage.setTitle("Création de formes géométriques");
-            primaryStage.show();
-
             primaryStage.setScene(scene);
             primaryStage.setWidth(1600);
             primaryStage.setHeight(900);
             primaryStage.show();
 
+            // TEST
+            PlayerThread pobj = new PlayerThread();
+            Thread pThread = new Thread(pobj);
+            pThread.setDaemon(true);
+            pThread.start();
+
+            Thread.sleep(500);
+            Job job = new Job("NOOP");
+            JobThread jt = new JobThread(job, pobj);
+            Thread jThread = new Thread(jt);
+            jThread.setDaemon(true);
+            jThread.start();
+            jThread.join();
+
+            System.out.println(job.getResponse());
+
             Reader reader = new Reader();
             Thread tReader = new Thread(reader);
             tReader.setDaemon(true);
             tReader.start();
+        }
+        catch(UnknownHostException bitch) {
+            System.out.println("Poil de poche.");
         }
         catch(InterruptedException ie){
             System.err.println("Reading nodes from server has been interrupted");

@@ -47,6 +47,7 @@ public class Gameboard extends Application {
             Thread tServ = new Thread(connexion);
             tServ.start();
             Thread tquestion = new Thread(question);
+            tquestion.setDaemon(true);
             tquestion.start();
 
             // Load Images
@@ -130,6 +131,11 @@ public class Gameboard extends Application {
             primaryStage.setResizable(false);
             primaryStage.show();
 
+            Reader reader = new Reader();
+            Thread tReader = new Thread(reader);
+            tReader.setDaemon(true);
+            tReader.start();
+
             // TEST
             PlayerThread pobj = new PlayerThread();
             Thread pThread = new Thread(pobj);
@@ -146,10 +152,6 @@ public class Gameboard extends Application {
 
             System.out.println(job.getResponse());
 
-            Reader reader = new Reader();
-            Thread tReader = new Thread(reader);
-            tReader.setDaemon(true);
-            tReader.start();
         }
         catch(UnknownHostException bitch) {
             System.out.println("Poil de poche.");

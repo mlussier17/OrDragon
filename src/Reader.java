@@ -44,22 +44,24 @@ public class Reader implements Runnable{
             PrintWriter write = new PrintWriter(new OutputStreamWriter(pSocket.getOutputStream()));
             ArrayList<Noeud> nodes = Noeud.getList();
 
-            while(true){
+            while(true) {
                 String[] tokens = (line = posReader.readLine()).split(" ");
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
-                        for (Noeud noeud : nodes) { noeud.resetEntities();} // Reset nodes;
+                        for (Noeud noeud : nodes) {
+                            noeud.resetEntities();
+                        } // Reset nodes;
                     }
                 });
-                for (int i = 0; i < tokens.length; ++i){
+                for (int i = 0; i < tokens.length; ++i) {
                     String[] deplacement = tokens[i].split(":");
 
                     Noeud piece = nodes.get(Integer.parseInt(deplacement[0]));
                     Platform.runLater(new Runnable() {
                         @Override
                         public void run() {
-                             new Entity(deplacement[1], piece);
+                            new Entity(deplacement[1], piece);
                         }
                     });
 

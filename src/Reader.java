@@ -65,7 +65,7 @@ public class Reader implements Runnable{
                         }
                     });
 
-                    System.out.println(deplacement[0] + deplacement[1]);
+                    //System.out.println(deplacement[0] + deplacement[1]);
                 }
 
 

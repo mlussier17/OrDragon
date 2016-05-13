@@ -34,6 +34,7 @@ public class Gameboard extends Application {
     }
     public final static String TEAM = "LesDieuxGrec";
     public static String LOCALIP;
+    public static PlayerThread pobj;
 
     @Override
     public void start(Stage primaryStage) {
@@ -137,21 +138,10 @@ public class Gameboard extends Application {
             tReader.start();
 
             // TEST
-            PlayerThread pobj = new PlayerThread();
+            pobj = new PlayerThread();
             Thread pThread = new Thread(pobj);
             pThread.setDaemon(true);
             pThread.start();
-
-            Thread.sleep(500);
-            Job job = new Job("NOOP");
-            JobThread jt = new JobThread(job, pobj);
-            Thread jThread = new Thread(jt);
-            jThread.setDaemon(true);
-            jThread.start();
-            jThread.join();
-
-            System.out.println(job.getResponse());
-
         }
         catch(UnknownHostException bitch) {
             System.out.println("Poil de poche.");

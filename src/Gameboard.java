@@ -162,6 +162,7 @@ public class Gameboard extends Application {
         System.out.println("Work");
     }
     private void btn4Click(){
-        System.out.println("Work");
+        System.out.println("Bye-bye");
+        System.exit(0);
     }
 }

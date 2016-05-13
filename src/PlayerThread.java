@@ -13,7 +13,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 
 public class PlayerThread implements Runnable{
     Socket pSocket;
-    Timer timer = new Timer();
+    Timer timer = new Timer(true);
     boolean run = true;
     public ArrayBlockingQueue<Job> jobs = new ArrayBlockingQueue<Job>( 10 );
 
@@ -33,7 +33,7 @@ public class PlayerThread implements Runnable{
              String tmprep = posReader.readLine();
              System.out.println("TCP Response -> " + tmprep);
 
-             /*timer.scheduleAtFixedRate(new TimerTask() {
+             timer.scheduleAtFixedRate(new TimerTask() {
                  @Override
                  public void run() {
                      Job job = new Job("NOOP");
@@ -42,7 +42,7 @@ public class PlayerThread implements Runnable{
                      jThread.setDaemon(true);
                      jThread.start();
                  }
-             }, 25000, 25000);*/
+             }, 25000, 25000);
 
              while (run) {
                  Job currentJob = jobs.take();

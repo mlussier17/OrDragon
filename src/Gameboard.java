@@ -7,15 +7,28 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Line;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextBoundsType;
 import javafx.stage.Stage;
 import javafx.scene.paint.Color;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+
+import javafx.event.EventHandler;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class Gameboard extends Application {
+
+    final static short NOMBRE_BOUTON=4;
+
     public static void main(String[] args) {
         launch(args);
     }
@@ -29,9 +42,12 @@ public class Gameboard extends Application {
             LOCALIP = InetAddress.getLocalHost().getHostAddress();
             System.out.println("L'adresse du client -> " + LOCALIP);
 
+            ServeurQuestion question = new ServeurQuestion();
             Connexion connexion = new Connexion();
             Thread tServ = new Thread(connexion);
             tServ.start();
+            Thread tquestion = new Thread(question);
+            tquestion.start();
 
             // Load Images
             Entity.LoadImages();
@@ -61,11 +77,57 @@ public class Gameboard extends Application {
                 group.getChildren().addAll(node,node.getPane());
             }
 
+            HBox box = new HBox();
+
+            Bouton btn1 = new Bouton(1500,850,"Démarrer",1);
+            btn1.setOnMouseClicked(new EventHandler<MouseEvent>(){
+                @Override
+                public void handle(MouseEvent t){
+                    btn1Click();
+                }
+            });
+            Bouton btn2 = new Bouton(1300, 850,"Construire",2);
+            btn2.setOnMouseClicked(new EventHandler<MouseEvent>(){
+                @Override
+                public void handle(MouseEvent t){
+                    btn2Click();
+                }
+            });
+            Bouton btn3 = new Bouton(1100, 850,"Payer",3);
+            btn3.setOnMouseClicked(new EventHandler<MouseEvent>(){
+                @Override
+                public void handle(MouseEvent t){
+                    btn3Click();
+                }
+            });
+            Bouton btn4 = new Bouton(900, 850,"Quitter",4);
+            btn4.setOnMouseClicked(new EventHandler<MouseEvent>(){
+                @Override
+                public void handle(MouseEvent t){
+                    btn4Click();
+                }
+            });
+
+            ArrayList<Bouton> arrayBouton =  new ArrayList<>(Arrays.asList(btn1,btn2,btn3,btn4));
+            for(int i=0;i < NOMBRE_BOUTON;++i)
+            {
+                HBox.setHgrow(arrayBouton.get(i), Priority.ALWAYS);
+                arrayBouton.get(i).setMaxWidth(150);
+
+            }
+
+            box.getChildren().addAll(btn1, btn2, btn3, btn4);
+            box.setLayoutX(1000);
+            box.setLayoutY(874);
+            box.setPrefWidth(600);
+            group.getChildren().add(box);
+
             Scene scene = new Scene(group);
 
             primaryStage.setScene(scene);
-            primaryStage.setWidth(1600);
-            primaryStage.setHeight(900);
+            primaryStage.setWidth(1607);
+            primaryStage.setHeight(929);
+            primaryStage.setResizable(false);
             primaryStage.show();
 
             // TEST
@@ -92,9 +154,22 @@ public class Gameboard extends Application {
         catch(UnknownHostException bitch) {
             System.out.println("Poil de poche.");
         }
-        catch(InterruptedException ie){
+        catch(InterruptedException ie) {
             System.err.println("Reading nodes from server has been interrupted");
 
         }
+    }
+    // TODO implements functions
+    private void btn1Click(){
+        System.out.println("Work");
+    }
+    private void btn2Click(){
+        System.out.println("Work");
+    }
+    private void btn3Click(){
+        System.out.println("Work");
+    }
+    private void btn4Click(){
+        System.out.println("Work");
     }
 }

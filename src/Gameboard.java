@@ -21,6 +21,9 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 import javafx.event.EventHandler;
+
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -30,6 +33,14 @@ public class Gameboard extends Application {
     final static short NOMBRE_BOUTON=4;
 
     public static void main(String[] args) {
+        // LOAD SQL DRIVERS
+        try {
+            DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
+            System.out.println("Driver charger");
+        } catch (SQLException se) {
+            System.out.println(se.getMessage());
+        }
+
         launch(args);
     }
     public final static String TEAM = "LesDieuxGrec";

@@ -1,7 +1,7 @@
+import oracle.jdbc.OracleTypes;
+
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 
 /**
  * Created by 201127412 on 2016-05-16.
@@ -13,15 +13,29 @@ public class Database {
     static private Database db = null;
 
     public static Question getQuestion(short difficulty){
+        CallableStatement stm;
+        PreparedStatement pstm;
+        Question question = new Question();
 
+        Connection con = getConnection();
+        try {
+            stm = con.prepareCall("{? = call PKGCLIENTS.LISTER}");
+            stm.registerOutParameter(1, OracleTypes.CURSOR);
+            stm.execute();
+        } catch (SQLException sqlex) {
+            // TODO
+        }
+
+        return question;
     }
 
     private static Connection getConnection() {
+        Connection con = null;
         try {
-
-            Connection con = DriverManager.getConnection(url, username, password);
+             con = DriverManager.getConnection(url, username, password);
         } catch(SQLException ex) {
-
+            // TODO
         }
+        return con;
     }
 }

@@ -35,6 +35,7 @@ public class Gameboard extends Application {
     public final static String TEAM = "LesDieuxGrec";
     public static String LOCALIP;
     public static PlayerThread pobj;
+    private Thread pThread;
 
     @Override
     public void start(Stage primaryStage) {
@@ -81,11 +82,11 @@ public class Gameboard extends Application {
 
             HBox box = new HBox();
 
-            Bouton btn1 = new Bouton(1500,850,"Démarrer",1);
+            Bouton btn1 = new Bouton(1500,850,"Jouer",1);
             btn1.setOnMouseClicked(new EventHandler<MouseEvent>(){
                 @Override
                 public void handle(MouseEvent t){
-                    btn1Click();
+                    btn1Click(btn1);
                 }
             });
             Bouton btn2 = new Bouton(1300, 850,"Construire",2);
@@ -106,7 +107,7 @@ public class Gameboard extends Application {
             btn4.setOnMouseClicked(new EventHandler<MouseEvent>(){
                 @Override
                 public void handle(MouseEvent t){
-                    btn4Click();
+                    btn4Click(btn1);
                 }
             });
 
@@ -137,12 +138,6 @@ public class Gameboard extends Application {
             tReader.setDaemon(true);
             tReader.start();
 
-            // TEST
-            pobj = new PlayerThread();
-            Thread pThread = new Thread(pobj);
-            pThread.setDaemon(true);
-            pThread.start();
-
             ServeurQuestion sQuestion = new ServeurQuestion();
             Thread qThread = new Thread(sQuestion);
             qThread.setDaemon(true);
@@ -158,17 +153,37 @@ public class Gameboard extends Application {
         }
     }
     // TODO implements functions
-    private void btn1Click(){
-        System.out.println("Work");
+    //Bouton Jouer
+    private void btn1Click(Bouton source){
+        if(source.getText().equalsIgnoreCase("Jouer")) {
+            pobj = new PlayerThread();
+            pThread = new Thread(pobj);
+            pThread.setDaemon(true);
+            pThread.start();
+            source.setText("Se déconnecter");
+        }
+        else{
+            pobj.jobs.add(new Job("QUIT"));
+            pThread.interrupt();
+            pThread = null;
+            pobj = null;
+            source.setText("Jouer");
+        }
     }
+
+    //Bouton Construire
     private void btn2Click(){
-        System.out.println("Work");
+        pobj.jobs.add(new Job("BUILD CHA"));
     }
+
+    //Bouton Payer
     private void btn3Click(){
         System.out.println("Work");
     }
-    private void btn4Click(){
-        System.out.println("Bye-bye");
+
+    //Bouton Quitter
+    private void btn4Click(Bouton source){
+        btn1Click(source);
         System.exit(0);
     }
 }

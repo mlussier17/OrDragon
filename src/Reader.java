@@ -1,9 +1,4 @@
 import javafx.application.Platform;
-import javafx.scene.Scene;
-import javafx.scene.image.ImageView;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.stage.Stage;
 
 import java.io.*;
 import java.net.InetSocketAddress;
@@ -20,20 +15,7 @@ public class Reader implements Runnable{
     final static public String IP = "149.56.47.97";
     final static private int PORT = 51006;
     private static Socket pSocket;
-    private static ArrayList<Noeud> usedNodes = new ArrayList<Noeud> ();
-    private static Color col = null;
 
-    public class Couleur implements Runnable{
-        Color col = null;
-        Noeud cercle = null;
-        Couleur(Color couleur, Noeud cerc){
-            col = couleur;
-            cercle = cerc;
-        }
-        public void run(){
-            cercle.setFill(col);
-        }
-    }
 
     public void run(){
         try {
@@ -64,8 +46,6 @@ public class Reader implements Runnable{
                             new Entity(deplacement[1], piece);
                         }
                     });
-
-                    //System.out.println(deplacement[0] + deplacement[1]);
                 }
 
 

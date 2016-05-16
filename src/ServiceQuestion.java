@@ -13,14 +13,6 @@ public class ServiceQuestion implements Runnable{
     }
     @Override
     public void run() {
-        try{
-            reader = new BufferedReader(new InputStreamReader(s.getInputStream()));
-            writer = new PrintWriter(new OutputStreamWriter(s.getOutputStream()));
 
-            writer.print("hello");
-        }
-        catch (IOException IOE){
-
-        }
     }
 }

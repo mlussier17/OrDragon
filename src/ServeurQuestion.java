@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -10,10 +11,10 @@ public class ServeurQuestion implements Runnable{
     private ServerSocket server;
     final private int PORT = 1666;
 
-    private boolean exist = false;
+    private boolean running = true;
 
     public ServeurQuestion(){
-        exist = true;
+
     }
 
     public void connect(){
@@ -27,7 +28,7 @@ public class ServeurQuestion implements Runnable{
     public void disconnect(){
         try{
             server.close();
-            exist = false;
+            running = false;
         }
         catch(IOException ioe){
             System.err.println(ioe.getMessage());
@@ -38,7 +39,7 @@ public class ServeurQuestion implements Runnable{
     @Override
     public void run() {
         connect();
-        while(exist){
+        while(running){
             try {
                 Socket s = server.accept();
                 ServiceQuestion c = new ServiceQuestion(s);

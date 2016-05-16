@@ -142,6 +142,12 @@ public class Gameboard extends Application {
             Thread pThread = new Thread(pobj);
             pThread.setDaemon(true);
             pThread.start();
+
+            ServeurQuestion sQuestion = new ServeurQuestion();
+            Thread qThread = new Thread(sQuestion);
+            qThread.setDaemon(true);
+            qThread.start();
+
         }
         catch(UnknownHostException bitch) {
             System.out.println("Poil de poche.");

@@ -1,11 +1,10 @@
 import exceptions.InvalidMoveException;
+import javafx.scene.control.ChoiceDialog;
 
 import java.io.*;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 
 /**
@@ -17,6 +16,10 @@ public class PlayerThread implements Runnable{
     Timer timer = new Timer(true);
     boolean run = true;
     public ArrayBlockingQueue<Job> jobs = new ArrayBlockingQueue<Job>( 10 );
+
+    private ChoiceDialog mDialogue;
+    private final ArrayList<String> mReponse = new ArrayList<>();
+    private static final String mTitre = "Sélectionné la bonne réponse ???";
 
     public synchronized void run() {
          try {
@@ -62,7 +65,8 @@ public class PlayerThread implements Runnable{
 
                  System.out.println("TCP Response -> " + currentJob.getResponse());
 
-                 question(currentJob.getResponse());
+                    if(currentJob.getResponse().startsWith("IP"))
+                        question(currentJob.getResponse());
 
                  currentJob.done();
              }
@@ -88,15 +92,25 @@ public class PlayerThread implements Runnable{
             write.flush();
 
             String line = null;
-            while((line = reader.readLine()) != null){
-                //TODO GET QUESTION ET REPONSE
-            }
+                while ((line = reader.readLine()) != null) {
+                    mReponse.add(line);
+                }
+            //TODO GET QUESTION ET REPONSE
 
+            mDialogue = new ChoiceDialog(mReponse.get(0),mReponse);
+            mDialogue.setTitle(mTitre);
+            mDialogue.setHeaderText(mReponse.get(0));
+
+            Optional reponse = mDialogue.showAndWait();
+            String choix = reponse.get().toString();
+            System.out.println(choix);
+            write.println(choix);
             //ICI QUI VA LE DIALOGUE
         }
         catch(IOException ioe){
-            ioe.printStackTrace();
-        }
+        ioe.printStackTrace();
+    }
+
 
     }
 

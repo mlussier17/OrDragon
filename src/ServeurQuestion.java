@@ -9,7 +9,7 @@ import java.net.Socket;
  */
 public class ServeurQuestion implements Runnable{
     private ServerSocket server;
-    final private int PORT = 1666;
+    final private int PORT = 6768;
 
     private boolean running = true;
 
@@ -19,7 +19,7 @@ public class ServeurQuestion implements Runnable{
 
     public void connect(){
         try{
-            server = new ServerSocket(PORT);
+            server = new ServerSocket(1666);
         }
         catch(IOException ioe){
             System.err.println(ioe.getMessage());
@@ -46,7 +46,6 @@ public class ServeurQuestion implements Runnable{
                 Thread t = new Thread(c);
                 t.run();
             } catch (IOException e) {
-                System.out.println("CRASH ICI");
                 e.printStackTrace();
             }
         }

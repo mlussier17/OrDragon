@@ -29,9 +29,8 @@ public class ServiceQuestion implements Runnable{
             } catch (SQLException se) {
                 System.out.println(se.getMessage());
             }
+
             try {
-
-
                 CONN = DriverManager.getConnection(url, user, pwd);
                 System.out.println("Connecte");
 
@@ -45,6 +44,7 @@ public class ServiceQuestion implements Runnable{
 
             //CallableStatement CalSup = CONN.prepareCall();
             writer.print("hello");
+            writer.flush();
         }
         catch (IOException IOE){
 

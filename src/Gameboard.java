@@ -55,10 +55,13 @@ public class Gameboard extends Application {
             LOCALIP = InetAddress.getLocalHost().getHostAddress();
             System.out.println("L'adresse du client -> " + LOCALIP);
 
-            ServeurQuestion question = new ServeurQuestion();
+            //Connexion au serveur de position
             Connexion connexion = new Connexion();
             Thread tServ = new Thread(connexion);
             tServ.start();
+
+            //Start du serveur de question qui ecoute
+            ServeurQuestion question = new ServeurQuestion();
             Thread tquestion = new Thread(question);
             tquestion.setDaemon(true);
             tquestion.start();
@@ -70,7 +73,9 @@ public class Gameboard extends Application {
             ArrayList<Noeud> nodes = Noeud.getList();
             ArrayList<Chemin> lines = Chemin.getList();
             tServ.join();
-            group.getChildren().add(new ImageView(new Image("http://prog101.com/travaux/dragon/images/carte03.png")));
+            group.getChildren().add(new ImageView(new Image("http://prog101.com/travaux/dragon/images/nowhereland.png")));
+
+            //Dessin des lignes sur la map
             for(int i = 0; i < lines.size(); ++i){
                 double sourceX = nodes.get(lines.get(i).getStart()).getCenterX();
                 double destX = nodes.get(lines.get(i).getDest()).getCenterX();
@@ -82,6 +87,7 @@ public class Gameboard extends Application {
                 group.getChildren().add(line);
             }
 
+            //Dessin des noeuds sur la map
             for (int i = 0; i < nodes.size(); ++i) {
                 Noeud node = nodes.get(i);
                 node.setStroke(Color.BLACK);
@@ -149,10 +155,6 @@ public class Gameboard extends Application {
             tReader.setDaemon(true);
             tReader.start();
 
-            ServeurQuestion sQuestion = new ServeurQuestion();
-            Thread qThread = new Thread(sQuestion);
-            qThread.setDaemon(true);
-            qThread.start();
 
         }
         catch(UnknownHostException bitch) {

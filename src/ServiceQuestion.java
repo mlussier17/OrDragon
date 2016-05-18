@@ -7,6 +7,7 @@ import java.net.Socket;
 import java.sql.*;
 import java.util.List;
 import java.util.Optional;
+import java.sql.*;
 
 /**
  * Created by 201078339 on 2016-05-13.
@@ -23,16 +24,14 @@ public class ServiceQuestion implements Runnable{
 
 
 
+
     ServiceQuestion(Socket soc){
         s = soc;
     }
 
-
     @Override
-
     public void run() {
-
-
+        try{
 
             String url = "jdbc:oracle:thin:@mercure.clg.qc.ca:1521:orcl";
             String user = "L";
@@ -47,7 +46,7 @@ public class ServiceQuestion implements Runnable{
             }
             try {
 
-
+            try {
                 CONN = DriverManager.getConnection(url, user, pwd);
                 System.out.println("Connecte");
 
@@ -56,12 +55,14 @@ public class ServiceQuestion implements Runnable{
                 System.out.println(se.getMessage());
             }
 
+            reader = new BufferedReader(new InputStreamReader(s.getInputStream()));
+            writer = new PrintWriter(new OutputStreamWriter(s.getOutputStream()));
 
-            try {
-                CallableStatement CalSup = CONN.prepareCall("{? = call questionspkg.getquestion(?)}");
-                CalSup.registerOutParameter(1, OracleTypes.CURSOR);
-                CalSup.setInt(2,1);
-                CalSup.execute();
+            //CallableStatement CalSup = CONN.prepareCall();
+            writer.print("hello");
+            writer.flush();
+        }
+        catch (IOException IOE){
 
                 ResultSet Allo = CalSup.executeQuery();
 

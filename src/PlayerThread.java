@@ -1,6 +1,7 @@
 import exceptions.InvalidMoveException;
 
 import java.io.*;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.Timer;
@@ -29,9 +30,14 @@ public class PlayerThread implements Runnable{
              // Send HELLO, it's me
              write.println("HELLO " + Gameboard.TEAM + " " + Gameboard.LOCALIP);
              write.flush();
-             // Error hadling LATER PLZ
              String tmprep = posReader.readLine();
              System.out.println("TCP Response -> " + tmprep);
+
+             //Send NODE to get wich node we are on
+             write.println("NODE");
+             write.flush();
+             String tmprep2 = posReader.readLine();
+             System.out.println("TCP Response -> " + tmprep2);
 
              timer.scheduleAtFixedRate(new TimerTask() {
                  @Override
@@ -56,6 +62,8 @@ public class PlayerThread implements Runnable{
 
                  System.out.println("TCP Response -> " + currentJob.getResponse());
 
+                 question(currentJob.getResponse());
+
                  currentJob.done();
              }
 
@@ -64,6 +72,32 @@ public class PlayerThread implements Runnable{
          } catch (IOException ex) {
 
          }
+    }
+
+    private void question(String ip){
+        try {
+            String[] tokens = ip.split(" ");
+            InetSocketAddress clientAdress = new InetSocketAddress(tokens[1], 1666);
+            Socket client = new Socket();
+            client.connect(clientAdress);
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(client.getInputStream()));
+            PrintWriter write = new PrintWriter(new OutputStreamWriter(pSocket.getOutputStream()));
+
+            write.println(Gameboard.TEAM);
+            write.flush();
+
+            String line = null;
+            while((line = reader.readLine()) != null){
+                //TODO GET QUESTION ET REPONSE
+            }
+
+            //ICI QUI VA LE DIALOGUE
+        }
+        catch(IOException ioe){
+            ioe.printStackTrace();
+        }
+
     }
 
 }

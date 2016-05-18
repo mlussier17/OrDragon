@@ -47,6 +47,7 @@ public class Gameboard extends Application {
     public static String LOCALIP;
     public static PlayerThread pobj;
     private Thread pThread;
+    public static Group group;
 
     @Override
     public void start(Stage primaryStage) {
@@ -69,7 +70,7 @@ public class Gameboard extends Application {
             // Load Images
             Entity.LoadImages();
 
-            Group group = new Group();
+            group = new Group();
             ArrayList<Noeud> nodes = Noeud.getList();
             ArrayList<Chemin> lines = Chemin.getList();
             tServ.join();

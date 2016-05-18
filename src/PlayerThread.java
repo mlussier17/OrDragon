@@ -1,4 +1,5 @@
 import exceptions.InvalidMoveException;
+import javafx.application.Platform;
 import javafx.scene.control.ChoiceDialog;
 
 import java.io.*;
@@ -18,7 +19,8 @@ public class PlayerThread implements Runnable{
     public ArrayBlockingQueue<Job> jobs = new ArrayBlockingQueue<Job>( 10 );
 
     private ChoiceDialog mDialogue;
-    private final ArrayList<String> mReponse = new ArrayList<>();
+    private String question;
+    private  ArrayList<String> mReponse = new ArrayList<>();
     private static final String mTitre = "Sélectionné la bonne réponse ???";
 
     public synchronized void run() {
@@ -66,7 +68,11 @@ public class PlayerThread implements Runnable{
                  System.out.println("TCP Response -> " + currentJob.getResponse());
 
                     if(currentJob.getResponse().startsWith("IP"))
-                        question(currentJob.getResponse());
+                        Platform.runLater(new Runnable() {
+                                              public void run() {
+                                                  question(currentJob.getResponse());
+                                              }
+                                          });
 
                  currentJob.done();
              }
@@ -86,25 +92,31 @@ public class PlayerThread implements Runnable{
             client.connect(clientAdress);
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(client.getInputStream()));
-            PrintWriter write = new PrintWriter(new OutputStreamWriter(pSocket.getOutputStream()));
+            PrintWriter write = new PrintWriter(new OutputStreamWriter(client.getOutputStream()));
 
             write.println(Gameboard.TEAM);
             write.flush();
 
-            String line = null;
-                while ((line = reader.readLine()) != null) {
-                    mReponse.add(line);
-                }
+            question = reader.readLine();
+            mReponse.add(reader.readLine());
+            mReponse.add(reader.readLine());
+            mReponse.add(reader.readLine());
+            mReponse.add(reader.readLine());
+
             //TODO GET QUESTION ET REPONSE
 
             mDialogue = new ChoiceDialog(mReponse.get(0),mReponse);
             mDialogue.setTitle(mTitre);
-            mDialogue.setHeaderText(mReponse.get(0));
+            mDialogue.setContentText(question);
+            mDialogue.setHeaderText(question);
 
-            Optional reponse = mDialogue.showAndWait();
-            String choix = reponse.get().toString();
-            System.out.println(choix);
-            write.println(choix);
+            Optional<String> reponse = mDialogue.showAndWait();
+            if(reponse.isPresent()){
+                for (int i = 0; i < 5; ++i){
+                    if (reponse.get().equals(mReponse.get(i))) System.out.println(reponse);
+                }
+            }
+
             //ICI QUI VA LE DIALOGUE
         }
         catch(IOException ioe){

@@ -70,7 +70,7 @@ public class Gameboard extends Application {
             ArrayList<Noeud> nodes = Noeud.getList();
             ArrayList<Chemin> lines = Chemin.getList();
             tServ.join();
-            group.getChildren().add(new ImageView(new Image("http://prog101.com/travaux/dragon/images/carte03.png")));
+            group.getChildren().add(new ImageView(new Image("http://prog101.com/travaux/dragon/images/nowhereland.png")));
             for(int i = 0; i < lines.size(); ++i){
                 double sourceX = nodes.get(lines.get(i).getStart()).getCenterX();
                 double destX = nodes.get(lines.get(i).getDest()).getCenterX();

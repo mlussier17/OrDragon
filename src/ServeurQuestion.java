@@ -46,6 +46,7 @@ public class ServeurQuestion implements Runnable{
                 Thread t = new Thread(c);
                 t.run();
             } catch (IOException e) {
+                System.out.println("CRASH ICI");
                 e.printStackTrace();
             }
         }

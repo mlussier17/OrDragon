@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.Socket;
+import java.sql.*;
 
 /**
  * Created by 201078339 on 2016-05-13.
@@ -8,9 +9,11 @@ public class ServiceQuestion implements Runnable{
     private Socket s;
     private BufferedReader reader;
     private PrintWriter writer;
+
     ServiceQuestion(Socket soc){
         s = soc;
     }
+
     @Override
     public void run() {
         try{
@@ -40,7 +43,7 @@ public class ServiceQuestion implements Runnable{
             reader = new BufferedReader(new InputStreamReader(s.getInputStream()));
             writer = new PrintWriter(new OutputStreamWriter(s.getOutputStream()));
 
-            CallableStatement CalSup = CONN.prepareCall();
+            //CallableStatement CalSup = CONN.prepareCall();
             writer.print("hello");
         }
         catch (IOException IOE){

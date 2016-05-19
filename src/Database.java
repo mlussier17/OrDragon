@@ -27,7 +27,7 @@ public class Database {
         return question;
     }
 
-    private static Connection getConnection() {
+    public static Connection getConnection() {
         Connection con = null;
         try {
              con = DriverManager.getConnection(url, username, password);

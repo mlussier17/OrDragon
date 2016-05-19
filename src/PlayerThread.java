@@ -103,6 +103,8 @@ public class PlayerThread implements Runnable{
             mReponse.add(reader.readLine());
             mReponse.add(reader.readLine());
 
+            //TODO GET QUESTION ET REPONSE
+
             mDialogue = new ChoiceDialog(mReponse.get(0),mReponse);
             mDialogue.setTitle(mTitre);
             mDialogue.setContentText(question);
@@ -110,10 +112,18 @@ public class PlayerThread implements Runnable{
 
             Optional<String> reponse = mDialogue.showAndWait();
             if(reponse.isPresent()){
-                for (int i = 0; i < 5; ++i){
-                    if (reponse.get().equals(mReponse.get(i))) System.out.println(reponse);
+                for (int i = 0; i < mReponse.size(); ++i) {
+                    if (mDialogue.getSelectedItem().equals(mReponse.get(i))){
+                        System.out.println(i +1);
+                        write.println(i +1);
+                        write.flush();
+                    }
                 }
             }
+            mReponse.clear();
+            question = null;
+            System.out.println( "Answer from question" + reader.readLine());
+
         }
         catch(IOException ioe){
         ioe.printStackTrace();

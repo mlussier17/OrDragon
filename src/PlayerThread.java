@@ -27,6 +27,8 @@ public class PlayerThread implements Runnable{
     private  ArrayList<String> mReponse = new ArrayList<>();
     private static final String mTitre = "Sélectionné la bonne réponse ???";
     private Connection conn = null;
+    private BufferedReader posReader;
+    private PrintWriter write;
 
     public synchronized void run() {
          try {
@@ -34,8 +36,8 @@ public class PlayerThread implements Runnable{
              pSocket = new Socket();
              pSocket.connect(adress);
 
-             BufferedReader posReader = new BufferedReader(new InputStreamReader(pSocket.getInputStream()));
-             PrintWriter write = new PrintWriter(new OutputStreamWriter(pSocket.getOutputStream()));
+             posReader = new BufferedReader(new InputStreamReader(pSocket.getInputStream()));
+             write = new PrintWriter(new OutputStreamWriter(pSocket.getOutputStream()));
 
              // Send HELLO, it's me
              write.println("HELLO " + Gameboard.TEAM + " " + Gameboard.LOCALIP);
@@ -77,6 +79,19 @@ public class PlayerThread implements Runnable{
                      CallableStatement stm = conn.prepareCall("{call PLAYERSPKG.AUGMENTERCAPITAL}");
                      stm.execute();
                  }
+
+                 if(currentJob.getResponse().startsWith("D")){
+                     conn = Database.getConnection();
+                     CallableStatement stm = conn.prepareCall("{call PLAYERSPKG.AUGMENTERDORITOS}");
+                     stm.execute();
+                 }
+
+                 if(currentJob.getResponse().startsWith("M")){
+                     conn = Database.getConnection();
+                     CallableStatement stm = conn.prepareCall("{call PLAYERSPKG.AUGMENTERDEW}");
+                     stm.execute();
+                 }
+
                  if(currentJob.getResponse().startsWith("IP"))
                     Platform.runLater(new Runnable() {
                                           public void run() {
@@ -108,10 +123,14 @@ public class PlayerThread implements Runnable{
             Socket client = new Socket();
             client.connect(clientAdress);
 
+            write.println("NODE");
+            write.flush();
+            String tmprep2 = posReader.readLine();
+
             BufferedReader reader = new BufferedReader(new InputStreamReader(client.getInputStream()));
             PrintWriter write = new PrintWriter(new OutputStreamWriter(client.getOutputStream()));
 
-            write.println(Gameboard.TEAM);
+            write.println(Gameboard.TEAM + tmprep2);
             write.flush();
 
             question = reader.readLine();

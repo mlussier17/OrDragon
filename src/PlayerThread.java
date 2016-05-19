@@ -127,17 +127,17 @@ public class PlayerThread implements Runnable{
             write.flush();
             String tmprep2 = posReader.readLine();
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(client.getInputStream()));
-            PrintWriter write = new PrintWriter(new OutputStreamWriter(client.getOutputStream()));
+            posReader = new BufferedReader(new InputStreamReader(client.getInputStream()));
+            write = new PrintWriter(new OutputStreamWriter(client.getOutputStream()));
 
             write.println(Gameboard.TEAM + tmprep2);
             write.flush();
 
-            question = reader.readLine();
-            mReponse.add(reader.readLine());
-            mReponse.add(reader.readLine());
-            mReponse.add(reader.readLine());
-            mReponse.add(reader.readLine());
+            question = posReader.readLine();
+            mReponse.add(posReader.readLine());
+            mReponse.add(posReader.readLine());
+            mReponse.add(posReader.readLine());
+            mReponse.add(posReader.readLine());
 
             //TODO GET QUESTION ET REPONSE
 
@@ -158,12 +158,12 @@ public class PlayerThread implements Runnable{
             }
             mReponse.clear();
             question = null;
-            System.out.println( "Answer from question" + reader.readLine());
+            System.out.println( "Answer from question" + posReader.readLine());
 
         }
-        catch(IOException ioe){
-        ioe.printStackTrace();
-    }
+            catch(IOException ioe){
+            ioe.printStackTrace();
+        }
 
 
     }

@@ -17,65 +17,40 @@ public class ServiceQuestion implements Runnable{
     private BufferedReader reader;
     private PrintWriter writer;
 
-    private ChoiceDialog mDialogue;
-    private final String mReponse[] = {};
-    private List mListe;
-    private static final String mTitre = "Sélectionné la bonne réponse ???";
-
-
-
-
     ServiceQuestion(Socket soc){
         s = soc;
     }
 
     @Override
     public void run() {
-        try{
-
-            String url = "jdbc:oracle:thin:@mercure.clg.qc.ca:1521:orcl";
-            String user = "L";
-            String pwd = "ORACLE1";
-            Connection CONN = null;
-
-            try {
-                DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
-                System.out.println("Driver charger");
-            } catch (SQLException se) {
-                System.out.println(se.getMessage());
-            }
-            try {
-
-            try {
-                CONN = DriverManager.getConnection(url, user, pwd);
-                System.out.println("Connecte");
-
-                PreparedStatement pst = null;
-            } catch (SQLException se) {
-                System.out.println(se.getMessage());
-            }
-
+        try {
+            System.out.println("Client connecte");
             reader = new BufferedReader(new InputStreamReader(s.getInputStream()));
             writer = new PrintWriter(new OutputStreamWriter(s.getOutputStream()));
 
-            //CallableStatement CalSup = CONN.prepareCall();
-            writer.print("hello");
-            writer.flush();
+            //Get the id of the player
+            String id = reader.readLine();
+            System.out.println(id);
+
+//            String url = "jdbc:oracle:thin:@mercure.clg.qc.ca:1521:orcl";
+//            Connection CONN = null;
+
+//            try {
+//                DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
+//                System.out.println("Driver charger");
+//            } catch (SQLException se) {
+//                System.out.println(se.getMessage());
+//            }
+//            CONN = Database.getConnection();
+
+
+            for (int i = 0; i < 5; ++i) {
+                writer.println("hello");
+                writer.flush();
+            }
         }
-        catch (IOException IOE){
+        catch (IOException IOE) {
 
-               // ResultSet Allo = CalSup.executeQuery();
-
-                mDialogue = new ChoiceDialog(mListe.get(0),mListe);
-                mDialogue.setTitle(mTitre);
-                //mDialogue.setHeaderText(Allo.getString(1));
-
-                Optional reponse = mDialogue.showAndWait();
-                String choix = "Aucune réponse";
-
-
-            } catch (Exception e) {
-                e.printStackTrace();
             }
         } catch (Exception e) {
             e.printStackTrace();

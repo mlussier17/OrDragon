@@ -9,7 +9,7 @@ import java.net.Socket;
  */
 public class ServeurQuestion implements Runnable{
     private ServerSocket server;
-    final private int PORT = 6768;
+    final private int PORT = 1666;
 
     private boolean running = true;
 
@@ -19,7 +19,7 @@ public class ServeurQuestion implements Runnable{
 
     public void connect(){
         try{
-            server = new ServerSocket(1666);
+            server = new ServerSocket(PORT);
         }
         catch(IOException ioe){
             System.err.println(ioe.getMessage());
@@ -42,9 +42,10 @@ public class ServeurQuestion implements Runnable{
         while(running){
             try {
                 Socket s = server.accept();
+                System.out.println("CONNECTED TBK");
                 ServiceQuestion c = new ServiceQuestion(s);
                 Thread t = new Thread(c);
-                t.run();
+                t.start();
             } catch (IOException e) {
                 e.printStackTrace();
             }

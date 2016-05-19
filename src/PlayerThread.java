@@ -103,8 +103,6 @@ public class PlayerThread implements Runnable{
             mReponse.add(reader.readLine());
             mReponse.add(reader.readLine());
 
-            //TODO GET QUESTION ET REPONSE
-
             mDialogue = new ChoiceDialog(mReponse.get(0),mReponse);
             mDialogue.setTitle(mTitre);
             mDialogue.setContentText(question);
@@ -116,8 +114,6 @@ public class PlayerThread implements Runnable{
                     if (reponse.get().equals(mReponse.get(i))) System.out.println(reponse);
                 }
             }
-
-            //ICI QUI VA LE DIALOGUE
         }
         catch(IOException ioe){
         ioe.printStackTrace();

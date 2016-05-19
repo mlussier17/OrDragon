@@ -1,15 +1,13 @@
 import oracle.jdbc.OracleTypes;
-
-import java.io.IOException;
 import java.sql.*;
 
 /**
  * Created by 201127412 on 2016-05-16.
  */
 public class Database {
-    final public static String url = "jdbc:myDriver:myDatabase";
-    final public static String username = "LESDIEUXGREC";
-    final public static String password = "SoccerSuck";
+    public static String url = "jdbc:myDriver:myDatabase";
+    private static String username = "LESDIEUXGREC";
+    private static String password = "SoccerSuck";
     static private Database db = null;
 
     public static Question getQuestion(short difficulty){
@@ -38,4 +36,6 @@ public class Database {
         }
         return con;
     }
+    public static String getUsername(){ return username;}
+    public static String getPassword(){ return password;}
 }

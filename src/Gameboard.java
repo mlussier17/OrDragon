@@ -10,27 +10,25 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Line;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextBoundsType;
 import javafx.stage.Stage;
 import javafx.scene.paint.Color;
-
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-
 import javafx.event.EventHandler;
-
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class Gameboard extends Application {
 
     final static short NOMBRE_BOUTON=4;
+    public final static String TEAM = "LesDieuxGrec";
+    public static String LOCALIP;
+    public static PlayerThread pobj;
+    private Thread pThread;
+    public static Group group;
 
     public static void main(String[] args) {
         // LOAD SQL DRIVERS
@@ -43,11 +41,6 @@ public class Gameboard extends Application {
 
         launch(args);
     }
-    public final static String TEAM = "LesDieuxGrec";
-    public static String LOCALIP;
-    public static PlayerThread pobj;
-    private Thread pThread;
-    public static Group group;
 
     @Override
     public void start(Stage primaryStage) {
@@ -71,9 +64,13 @@ public class Gameboard extends Application {
             Entity.LoadImages();
 
             group = new Group();
+
+            //Create an array for nodes and lines
             ArrayList<Noeud> nodes = Noeud.getList();
             ArrayList<Chemin> lines = Chemin.getList();
             tServ.join();
+
+            //Get the background map from his website
             group.getChildren().add(new ImageView(new Image("http://prog101.com/travaux/dragon/images/nowhereland.png")));
 
             //Dessin des lignes sur la map
@@ -98,8 +95,8 @@ public class Gameboard extends Application {
                 group.getChildren().addAll(node,node.getPane());
             }
 
+            //Create button bar
             HBox box = new HBox();
-
             Bouton btn1 = new Bouton(1500,850,"Jouer",1);
             btn1.setOnMouseClicked(new EventHandler<MouseEvent>(){
                 @Override
@@ -129,6 +126,7 @@ public class Gameboard extends Application {
                 }
             });
 
+            //Position the button bar
             ArrayList<Bouton> arrayBouton =  new ArrayList<>(Arrays.asList(btn1,btn2,btn3,btn4));
             for(int i=0;i < NOMBRE_BOUTON;++i)
             {
@@ -136,13 +134,14 @@ public class Gameboard extends Application {
                 arrayBouton.get(i).setMaxWidth(150);
 
             }
-
+            //Button bar properties
             box.getChildren().addAll(btn1, btn2, btn3, btn4);
             box.setLayoutX(1000);
             box.setLayoutY(874);
             box.setPrefWidth(600);
             group.getChildren().add(box);
 
+            //Creation of the graphic application
             Scene scene = new Scene(group);
 
             primaryStage.setScene(scene);
@@ -151,6 +150,7 @@ public class Gameboard extends Application {
             primaryStage.setResizable(false);
             primaryStage.show();
 
+            //Main thread that reads the position server
             Reader reader = new Reader();
             Thread tReader = new Thread(reader);
             tReader.setDaemon(true);

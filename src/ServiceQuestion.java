@@ -1,12 +1,5 @@
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.ChoiceDialog;
-import oracle.jdbc.OracleTypes;
-
 import java.io.*;
 import java.net.Socket;
-import java.sql.*;
-import java.util.List;
-import java.util.Optional;
 import java.sql.*;
 
 /**
@@ -26,8 +19,6 @@ public class ServiceQuestion implements Runnable{
         try {
 
             String url = "jdbc:oracle:thin:@mercure.clg.qc.ca:1521:orcl";
-            String user = "L";
-            String pwd = "ORACLE1";
             Connection CONN = null;
 
             try {
@@ -39,7 +30,7 @@ public class ServiceQuestion implements Runnable{
             try {
 
                 try {
-                    CONN = DriverManager.getConnection(url, user, pwd);
+                    CONN = DriverManager.getConnection(url, Database.getUsername(), Database.getPassword());
                     System.out.println("Connecte");
 
                     PreparedStatement pst = null;

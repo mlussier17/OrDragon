@@ -5,6 +5,10 @@ import javafx.scene.control.ChoiceDialog;
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 
@@ -22,6 +26,7 @@ public class PlayerThread implements Runnable{
     private String question;
     private  ArrayList<String> mReponse = new ArrayList<>();
     private static final String mTitre = "Sélectionné la bonne réponse ???";
+    private Connection conn = null;
 
     public synchronized void run() {
          try {
@@ -67,17 +72,29 @@ public class PlayerThread implements Runnable{
 
                  System.out.println("TCP Response -> " + currentJob.getResponse());
 
-                    if(currentJob.getResponse().startsWith("IP"))
-                        Platform.runLater(new Runnable() {
-                                              public void run() {
-                                                  question(currentJob.getResponse());
-                                              }
-                                          });
+                 if(currentJob.getResponse().startsWith("P")){
+                     conn = Database.getConnection();
+                     CallableStatement stm = conn.prepareCall("{call PLAYERSPKG.AUGMENTERCAPITAL}");
+                     stm.execute();
+                 }
+                 if(currentJob.getResponse().startsWith("IP"))
+                    Platform.runLater(new Runnable() {
+                                          public void run() {
+                                              question(currentJob.getResponse());
+                                          }
+                                      });
 
                  currentJob.done();
              }
 
-         } catch (InterruptedException ie) {
+         } catch(NullPointerException npe){
+             System.err.println(npe.getMessage());
+         }
+         catch (SQLException sqle){
+             System.out.println(sqle.getMessage());
+
+         }
+         catch (InterruptedException ie) {
 
          } catch (IOException ex) {
 

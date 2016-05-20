@@ -4,7 +4,7 @@
 public class Job {
     private boolean done_ = false;
     private String command_ = null;
-    private String response_ = null;
+    private static String response_ = null;
 
     Job(String command) {
         command_ = command;
@@ -22,7 +22,7 @@ public class Job {
         return done_;
     }
 
-    public String getResponse() {
+    public static String getResponse() {
         return response_;
     }
 

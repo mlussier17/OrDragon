@@ -29,6 +29,7 @@ public class Gameboard extends Application {
     public static PlayerThread pobj;
     private Thread pThread;
     public static Group group;
+    public static Boolean playing = false;
 
     public static void main(String[] args) {
         // LOAD SQL DRIVERS
@@ -170,6 +171,9 @@ public class Gameboard extends Application {
     //Bouton Jouer
     private void btn1Click(Bouton source){
         if(source.getText().equalsIgnoreCase("Jouer")) {
+            playing = true;
+            PlayerThread.run = true;
+            Database.resetStats();
             pobj = new PlayerThread();
             pThread = new Thread(pobj);
             pThread.setDaemon(true);
@@ -177,6 +181,8 @@ public class Gameboard extends Application {
             source.setText("Se déconnecter");
         }
         else{
+            PlayerThread.run = false;
+            playing = false;
             pobj.jobs.add(new Job("QUIT"));
             pThread.interrupt();
             pThread = null;
@@ -187,11 +193,19 @@ public class Gameboard extends Application {
 
     //Bouton Construire
     private void btn2Click(){
-        pobj.jobs.add(new Job("BUILD CHA"));
+        if(playing)
+            pobj.jobs.add(new Job("BUILD CHA"));
     }
 
     //Bouton Payer
-    private void btn3Click(){
+    private static void btn3Click(){
+        pobj.jobs.add(new Job("NODE"));
+        String node = Job.getResponse();
+        if (Integer.parseInt(node) == 79){
+            Boolean paying = Database.payDoritos();
+            if(paying) pobj.jobs.add(new Job("FREE"));
+            //else //TODO IMPLEMENT
+        }
         System.out.println("Work");
     }
 

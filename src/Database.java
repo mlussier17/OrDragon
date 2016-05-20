@@ -9,13 +9,15 @@ public class Database {
     private static String username = "LESDIEUXGREC";
     private static String password = "SoccerSuck";
     static private Database db = null;
+    private static CallableStatement stm;
+    private static PreparedStatement pstm;
+    private static Connection con;
 
     public static Question getQuestion(short difficulty){
-        CallableStatement stm;
-        PreparedStatement pstm;
+
         Question question = new Question();
 
-        Connection con = getConnection();
+         con = getConnection();
         try {
             stm = con.prepareCall("{? = call PKGCLIENTS.LISTER}");
             stm.registerOutParameter(1, OracleTypes.CURSOR);
@@ -38,4 +40,39 @@ public class Database {
     }
     public static String getUsername(){ return username;}
     public static String getPassword(){ return password;}
+
+    public static void resetStats(){
+        try {
+            stm = getConnection().prepareCall("{call PLAYERSPKG.RESETAVOIRJOUEURS}");
+            stm.execute();
+        }
+        catch (SQLException sqle){
+
+        }
+    }
+
+    public static Boolean payDoritos(){
+        try {
+            stm = getConnection().prepareCall("{? = call PLAYERSPKG.GETAVOIRTEAM}");
+            stm.registerOutParameter(1, OracleTypes.CURSOR);
+            stm.execute();
+            ResultSet rst = (ResultSet) stm.getObject(1);
+            rst.next();
+            int doritos = rst.getInt(1);
+            int capital = rst.getInt(2);
+            if (doritos >= 1){
+                stm.getConnection().prepareCall("{call PLAYERSPKG.PAYERDORITOS");
+                stm.execute();
+                return true;
+            } else if(capital >= 2){
+                stm.getConnection().prepareCall("{call PLAYERSPKG.PAYERCAPITAL(2)");
+                stm.execute();
+                return true;
+            }
+        }
+        catch (SQLException sqle){
+
+        }
+        return false;
+    }
 }

@@ -19,7 +19,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 public class PlayerThread implements Runnable{
     Socket pSocket;
     Timer timer = new Timer(true);
-    boolean run = true;
+    public static boolean run = true;
     public ArrayBlockingQueue<Job> jobs = new ArrayBlockingQueue<Job>( 10 );
 
     private ChoiceDialog mDialogue;
@@ -51,16 +51,18 @@ public class PlayerThread implements Runnable{
              String tmprep2 = posReader.readLine();
              System.out.println("TCP Response -> " + tmprep2);
 
-             timer.scheduleAtFixedRate(new TimerTask() {
-                 @Override
-                 public void run() {
-                     Job job = new Job("NOOP");
-                     JobThread jt = new JobThread(job, Gameboard.pobj);
-                     Thread jThread = new Thread(jt);
-                     jThread.setDaemon(true);
-                     jThread.start();
-                 }
-             }, 25000, 25000);
+//             if(run) {
+//                 timer.scheduleAtFixedRate(new TimerTask() {
+//                     @Override
+//                     public void run() {
+//                         Job job = new Job("NOOP");
+//                         JobThread jt = new JobThread(job, Gameboard.pobj);
+//                         Thread jThread = new Thread(jt);
+//                         jThread.setDaemon(true);
+//                         jThread.start();
+//                     }
+//                 }, 25000, 25000);
+//             }
 
              while (run) {
                  Job currentJob = jobs.take();
@@ -103,6 +105,7 @@ public class PlayerThread implements Runnable{
              }
 
          } catch(NullPointerException npe){
+             System.out.println("vbbsdfvhilbsdv");
              System.err.println(npe.getMessage());
          }
          catch (SQLException sqle){
@@ -130,7 +133,8 @@ public class PlayerThread implements Runnable{
             posReader = new BufferedReader(new InputStreamReader(client.getInputStream()));
             write = new PrintWriter(new OutputStreamWriter(client.getOutputStream()));
 
-            write.println(Gameboard.TEAM + tmprep2);
+            write.println(Gameboard.TEAM + " " +  tmprep2);
+            System.out.println(Gameboard.TEAM + " " +  tmprep2);
             write.flush();
 
             question = posReader.readLine();
@@ -158,7 +162,7 @@ public class PlayerThread implements Runnable{
             }
             mReponse.clear();
             question = null;
-            System.out.println( "Answer from question" + posReader.readLine());
+            System.out.println( "Answer from question " + posReader.readLine());
 
         }
             catch(IOException ioe){

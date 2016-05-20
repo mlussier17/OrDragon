@@ -105,7 +105,6 @@ public class PlayerThread implements Runnable{
              }
 
          } catch(NullPointerException npe){
-             System.out.println("vbbsdfvhilbsdv");
              System.err.println(npe.getMessage());
          }
          catch (SQLException sqle){
@@ -162,7 +161,7 @@ public class PlayerThread implements Runnable{
             }
             mReponse.clear();
             question = null;
-            System.out.println( "Answer from question " + posReader.readLine());
+            System.out.println( "Answer from question" + posReader.readLine());
 
         }
             catch(IOException ioe){

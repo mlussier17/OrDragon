@@ -1,7 +1,16 @@
 import oracle.jdbc.internal.OracleTypes;
 
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ChoiceDialog;
+
+
 import java.io.*;
+import java.io.Reader;
 import java.net.Socket;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.sql.*;
 
 /**
@@ -24,8 +33,8 @@ public class ServiceQuestion implements Runnable{
             writer = new PrintWriter(new OutputStreamWriter(s.getOutputStream()));
 
             //Get the id of the player
-            String id = reader.readLine();
-            System.out.println(id);
+            String[] id = reader.readLine().split(" ");
+            System.out.println(id[0]);
 
             String url = "jdbc:oracle:thin:@mercure.clg.qc.ca:1521:orcl";
             Connection CONN = null;
@@ -39,25 +48,59 @@ public class ServiceQuestion implements Runnable{
             CONN = Database.getConnection();
 
             CallableStatement statementQuestion =CONN.prepareCall("{ ? = call QUESTIONSPKG.getQuestion(?)}");
-            statementQuestion.registerOutParameter(1, OracleTypes.CURSOR);
+            statementQuestion.registerOutParameter(1, oracle.jdbc.internal.OracleTypes.CURSOR);
 
             statementQuestion.setInt(2,1);
             statementQuestion.execute();
 
             ResultSet rest=(ResultSet) statementQuestion.getObject(1);
 
-            for(int i=0;i<5;++i)
+            String Question = null;
+            boolean enonce=true;
+            ArrayList<String> arrayReponse = new ArrayList<String>();
+            String bonneReponse = null;
+            int goodAnswer = 0;
+            int j =1;
+            while(rest.next())
             {
-                if(i==0) {
-                    writer.println(rest);
-                    writer.flush();
+                if(enonce) {
+                    Question = rest.getObject(2).toString();
+                    enonce = false;
+                }
+                if(rest.getInt(4)==1){
+                    bonneReponse = rest.getObject(3).toString();
+                    goodAnswer = j;
                 }
                 else
-                {
-                    writer.println();
-                    writer.flush();
-                }
+                    arrayReponse.add(rest.getObject(3).toString());
+                ++j;
             }
+
+            writer.println(Question);
+            writer.println(bonneReponse);
+
+            for(int i=0;i<arrayReponse.size();++i)
+                writer.println(arrayReponse.get(i));
+            writer.flush();
+
+            int rep = Integer.parseInt(reader.readLine());
+            System.out.println("Answer gotten : " + rep);
+
+            if(!(rep == goodAnswer)){
+                writer.println("ERR");
+                //TODO PAYING FOR WRONG ANSWER
+            }
+            else
+                writer.println("OK");
+
+            writer.flush();
+
+            Gameboard.pobj.jobs.add(new Job("UNLOCK " + id[0]));
+            System.out.println("TCP Response : " + Job.getResponse());
+            reader.close();
+            writer.close();
+            s.close();
+
         }
         catch (IOException IOE) {
 

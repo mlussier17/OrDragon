@@ -51,16 +51,16 @@ public class PlayerThread implements Runnable{
              String tmprep2 = posReader.readLine();
              System.out.println("TCP Response -> " + tmprep2);
 
-             timer.scheduleAtFixedRate(new TimerTask() {
-                 @Override
-                 public void run() {
-                     Job job = new Job("NOOP");
-                     JobThread jt = new JobThread(job, Gameboard.pobj);
-                     Thread jThread = new Thread(jt);
-                     jThread.setDaemon(true);
-                     jThread.start();
-                 }
-             }, 25000, 25000);
+//             timer.scheduleAtFixedRate(new TimerTask() {
+//                 @Override
+//                 public void run() {
+//                     Job job = new Job("NOOP");
+//                     JobThread jt = new JobThread(job, Gameboard.pobj);
+//                     Thread jThread = new Thread(jt);
+//                     jThread.setDaemon(true);
+//                     jThread.start();
+//                 }
+//             }, 25000, 25000);
 
              while (run) {
                  Job currentJob = jobs.take();

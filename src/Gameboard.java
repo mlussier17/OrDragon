@@ -24,7 +24,7 @@ import java.util.Arrays;
 public class Gameboard extends Application {
 
     final static short NOMBRE_BOUTON=4;
-    public final static String TEAM = "LesDieuxGrec";
+    public final static String TEAM = "LesDieuxGrec2";
     public static String LOCALIP;
     public static PlayerThread pobj;
     private Thread pThread;

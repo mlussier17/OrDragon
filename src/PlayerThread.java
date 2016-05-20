@@ -5,6 +5,10 @@ import javafx.scene.control.ChoiceDialog;
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 
@@ -22,6 +26,9 @@ public class PlayerThread implements Runnable{
     private String question;
     private  ArrayList<String> mReponse = new ArrayList<>();
     private static final String mTitre = "Sélectionné la bonne réponse ???";
+    private Connection conn = null;
+    private BufferedReader posReader;
+    private PrintWriter write;
 
     public synchronized void run() {
          try {
@@ -29,8 +36,8 @@ public class PlayerThread implements Runnable{
              pSocket = new Socket();
              pSocket.connect(adress);
 
-             BufferedReader posReader = new BufferedReader(new InputStreamReader(pSocket.getInputStream()));
-             PrintWriter write = new PrintWriter(new OutputStreamWriter(pSocket.getOutputStream()));
+             posReader = new BufferedReader(new InputStreamReader(pSocket.getInputStream()));
+             write = new PrintWriter(new OutputStreamWriter(pSocket.getOutputStream()));
 
              // Send HELLO, it's me
              write.println("HELLO " + Gameboard.TEAM + " " + Gameboard.LOCALIP);
@@ -67,17 +74,42 @@ public class PlayerThread implements Runnable{
 
                  System.out.println("TCP Response -> " + currentJob.getResponse());
 
-                    if(currentJob.getResponse().startsWith("IP"))
-                        Platform.runLater(new Runnable() {
-                                              public void run() {
-                                                  question(currentJob.getResponse());
-                                              }
-                                          });
+                 if(currentJob.getResponse().startsWith("P")){
+                     conn = Database.getConnection();
+                     CallableStatement stm = conn.prepareCall("{call PLAYERSPKG.AUGMENTERCAPITAL}");
+                     stm.execute();
+                 }
+
+                 if(currentJob.getResponse().startsWith("D")){
+                     conn = Database.getConnection();
+                     CallableStatement stm = conn.prepareCall("{call PLAYERSPKG.AUGMENTERDORITOS}");
+                     stm.execute();
+                 }
+
+                 if(currentJob.getResponse().startsWith("M")){
+                     conn = Database.getConnection();
+                     CallableStatement stm = conn.prepareCall("{call PLAYERSPKG.AUGMENTERDEW}");
+                     stm.execute();
+                 }
+
+                 if(currentJob.getResponse().startsWith("IP"))
+                    Platform.runLater(new Runnable() {
+                                          public void run() {
+                                              question(currentJob.getResponse());
+                                          }
+                                      });
 
                  currentJob.done();
              }
 
-         } catch (InterruptedException ie) {
+         } catch(NullPointerException npe){
+             System.err.println(npe.getMessage());
+         }
+         catch (SQLException sqle){
+             System.out.println(sqle.getMessage());
+
+         }
+         catch (InterruptedException ie) {
 
          } catch (IOException ex) {
 
@@ -91,17 +123,21 @@ public class PlayerThread implements Runnable{
             Socket client = new Socket();
             client.connect(clientAdress);
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(client.getInputStream()));
-            PrintWriter write = new PrintWriter(new OutputStreamWriter(client.getOutputStream()));
+            write.println("NODE");
+            write.flush();
+            String tmprep2 = posReader.readLine();
 
-            write.println(Gameboard.TEAM);
+            posReader = new BufferedReader(new InputStreamReader(client.getInputStream()));
+            write = new PrintWriter(new OutputStreamWriter(client.getOutputStream()));
+
+            write.println(Gameboard.TEAM + tmprep2);
             write.flush();
 
-            question = reader.readLine();
-            mReponse.add(reader.readLine());
-            mReponse.add(reader.readLine());
-            mReponse.add(reader.readLine());
-            mReponse.add(reader.readLine());
+            question = posReader.readLine();
+            mReponse.add(posReader.readLine());
+            mReponse.add(posReader.readLine());
+            mReponse.add(posReader.readLine());
+            mReponse.add(posReader.readLine());
 
             //TODO GET QUESTION ET REPONSE
 
@@ -122,12 +158,12 @@ public class PlayerThread implements Runnable{
             }
             mReponse.clear();
             question = null;
-            System.out.println( "Answer from question" + reader.readLine());
+            System.out.println( "Answer from question" + posReader.readLine());
 
         }
-        catch(IOException ioe){
-        ioe.printStackTrace();
-    }
+            catch(IOException ioe){
+            ioe.printStackTrace();
+        }
 
 
     }

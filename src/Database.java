@@ -5,7 +5,7 @@ import java.sql.*;
  * Created by 201127412 on 2016-05-16.
  */
 public class Database {
-    public static String url = "jdbc:myDriver:myDatabase";
+    public static String url = "jdbc:oracle:thin:@mercure.clg.qc.ca:1521:orcl";
     private static String username = "LESDIEUXGREC";
     private static String password = "SoccerSuck";
     static private Database db = null;

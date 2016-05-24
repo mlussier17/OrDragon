@@ -24,7 +24,7 @@ import java.util.Arrays;
 public class Gameboard extends Application {
 
     final static short NOMBRE_BOUTON=4;
-    public final static String TEAM = "LesDieuxGrec2";
+    public final static String TEAM = "LesDieuxGrec3";
     public static String LOCALIP;
     public static PlayerThread pobj;
     private Thread pThread;
@@ -199,14 +199,13 @@ public class Gameboard extends Application {
 
     //Bouton Payer
     private static void btn3Click(){
-        pobj.jobs.add(new Job("NODE"));
+        /*pobj.jobs.add(new Job("NODE"));
         String node = Job.getResponse();
         if (Integer.parseInt(node) == 79){
             Boolean paying = Database.payDoritos();
             if(paying) pobj.jobs.add(new Job("FREE"));
             //else //TODO IMPLEMENT
-        }
-        System.out.println("Work");
+        }*/
     }
 
     //Bouton Quitter

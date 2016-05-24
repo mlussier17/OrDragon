@@ -90,13 +90,19 @@ public class ServiceQuestion implements Runnable{
                 writer.println("ERR");
                 //TODO PAYING FOR WRONG ANSWER
             }
-            else
+            else {
                 writer.println("OK");
-
+            }
             writer.flush();
 
-            Gameboard.pobj.jobs.add(new Job("UNLOCK " + id[0]));
-            System.out.println("TCP Response : " + Job.getResponse());
+            Job job = new Job("UNLOCK " + id[0]);
+            JobThread jt = new JobThread(job, Gameboard.pobj);
+            Thread jThread = new Thread(jt);
+            jThread.setDaemon(true);
+            jThread.start();
+            jThread.join();
+
+            System.out.println("TCP Response : " + job.getResponse());
             reader.close();
             writer.close();
             s.close();

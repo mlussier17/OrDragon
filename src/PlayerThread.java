@@ -125,22 +125,34 @@ public class PlayerThread implements Runnable{
             Socket client = new Socket();
             client.connect(clientAdress);
 
+            /*
             write.println("NODE");
             write.flush();
             String tmprep2 = posReader.readLine();
+            */
+            Job job = new Job("NODE");
+            try {
+                JobThread jt = new JobThread(job, Gameboard.pobj);
+                Thread jThread = new Thread(jt);
+                jThread.setDaemon(true);
+                jThread.start();
+                jThread.join();
+            } catch (InterruptedException ie) {
+                // TODO
+            }
 
-            posReader = new BufferedReader(new InputStreamReader(client.getInputStream()));
-            write = new PrintWriter(new OutputStreamWriter(client.getOutputStream()));
+            BufferedReader posReaderClient = new BufferedReader(new InputStreamReader(client.getInputStream()));
+            PrintWriter writeClient = new PrintWriter(new OutputStreamWriter(client.getOutputStream()));
 
-            write.println(Gameboard.TEAM + " " +  tmprep2);
-            System.out.println(Gameboard.TEAM + " " +  tmprep2);
-            write.flush();
+            writeClient.println(Gameboard.TEAM + " " + job.getResponse());
+            System.out.println(Gameboard.TEAM + " " +  job.getResponse());
+            writeClient.flush();
 
-            question = posReader.readLine();
-            mReponse.add(posReader.readLine());
-            mReponse.add(posReader.readLine());
-            mReponse.add(posReader.readLine());
-            mReponse.add(posReader.readLine());
+            question = posReaderClient.readLine();
+            mReponse.add(posReaderClient.readLine());
+            mReponse.add(posReaderClient.readLine());
+            mReponse.add(posReaderClient.readLine());
+            mReponse.add(posReaderClient.readLine());
 
             //TODO GET QUESTION ET REPONSE
 
@@ -154,14 +166,14 @@ public class PlayerThread implements Runnable{
                 for (int i = 0; i < mReponse.size(); ++i) {
                     if (mDialogue.getSelectedItem().equals(mReponse.get(i))){
                         System.out.println(i +1);
-                        write.println(i +1);
-                        write.flush();
+                        writeClient.println(i +1);
+                        writeClient.flush();
                     }
                 }
             }
             mReponse.clear();
             question = null;
-            System.out.println( "Answer from question" + posReader.readLine());
+            System.out.println( "Answer from question : " + posReaderClient.readLine());
 
         }
             catch(IOException ioe){

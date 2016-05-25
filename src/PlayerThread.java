@@ -99,6 +99,7 @@ public class PlayerThread implements Runnable{
                     Thread t = new Thread(() -> question(currentJob.getResponse()));
                     t.start();
                 }
+                Platform.runLater(() -> Gameboard.UpdateStats());
                 currentJob.done();
             }
 

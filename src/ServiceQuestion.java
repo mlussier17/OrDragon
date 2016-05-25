@@ -58,9 +58,8 @@ public class ServiceQuestion implements Runnable{
             String Question = null;
             boolean enonce=true;
             ArrayList<String> arrayReponse = new ArrayList<String>();
-            String bonneReponse = null;
             int goodAnswer = 0;
-            int j =1;
+            int j = 0;
             while(rest.next())
             {
                 if(enonce) {
@@ -68,7 +67,7 @@ public class ServiceQuestion implements Runnable{
                     enonce = false;
                 }
                 if(rest.getInt(4)==1){
-                    bonneReponse = rest.getObject(3).toString();
+                    arrayReponse.add(rest.getObject(3).toString());
                     goodAnswer = j;
                 }
                 else
@@ -77,7 +76,6 @@ public class ServiceQuestion implements Runnable{
             }
 
             writer.println(Question);
-            writer.println(bonneReponse);
 
             for(int i=0;i<arrayReponse.size();++i)
                 writer.println(arrayReponse.get(i));

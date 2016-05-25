@@ -88,7 +88,9 @@ public class ServiceQuestion implements Runnable{
 
             if(!(rep == goodAnswer)){
                 writer.println("ERR");
-                //TODO PAYING FOR WRONG ANSWER
+                CallableStatement stm = Database.getConnection().prepareCall("{call PLAYERSPKG.AUGMENTERCAPITAL}");
+                stm.execute();
+                stm.execute();
             }
             else {
                 writer.println("OK");

@@ -58,14 +58,14 @@ public class Database {
             stm.execute();
             ResultSet rst = (ResultSet) stm.getObject(1);
             rst.next();
-            int doritos = rst.getInt(1);
-            int capital = rst.getInt(2);
+            int doritos = rst.getInt("nbdoritos");
+            int capital = rst.getInt("capital");
             if (doritos >= 1){
-                stm.getConnection().prepareCall("{call PLAYERSPKG.PAYERDORITOS");
+                stm = getConnection().prepareCall("{call PLAYERSPKG.PAYERDORITOS}");
                 stm.execute();
                 return true;
             } else if(capital >= 2){
-                stm.getConnection().prepareCall("{call PLAYERSPKG.PAYERCAPITAL(2)");
+                stm = getConnection().prepareCall("{call PLAYERSPKG.PAYERCAPITAL(2)}");
                 stm.execute();
                 return true;
             }
@@ -73,6 +73,48 @@ public class Database {
         catch (SQLException sqle){
 
         }
+        return false;
+    }
+
+    public static Boolean payDew(){
+        try {
+            stm = getConnection().prepareCall("{? = call PLAYERSPKG.GETAVOIRTEAM}");
+            stm.registerOutParameter(1, OracleTypes.CURSOR);
+            stm.execute();
+            ResultSet rst = (ResultSet) stm.getObject(1);
+            rst.next();
+            int dew = rst.getInt("nbmountaindew");
+            int capital = rst.getInt("capital");
+            if (dew >= 1){
+                stm = getConnection().prepareCall("{call PLAYERSPKG.PAYERDEW}");
+                stm.execute();
+                return true;
+            } else if(capital >= 2){
+                stm = getConnection().prepareCall("{call PLAYERSPKG.PAYERCAPITAL(2)");
+                stm.execute();
+                return true;
+            }
+        }
+        catch (SQLException sqle){
+
+        }
+        return false;
+    }
+
+    public static Boolean payAuberge() {
+        try {
+            stm = getConnection().prepareCall("{? = call PLAYERSPKG.GETAVOIRTEAM}");
+            stm.registerOutParameter(1, OracleTypes.CURSOR);
+            stm.execute();
+            ResultSet rst = (ResultSet) stm.getObject(1);
+            rst.next();
+            int capital = rst.getInt("capital");
+            if (capital >= 3) {
+                stm = getConnection().prepareCall("{call PLAYERSPKG.PAYERCAPITAL(3)}");
+                stm.execute();
+                return true;
+            }
+        } catch (SQLException sqle) {}
         return false;
     }
 }

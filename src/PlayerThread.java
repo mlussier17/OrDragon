@@ -1,14 +1,15 @@
 import exceptions.InvalidMoveException;
 import javafx.application.Platform;
 import javafx.scene.control.ChoiceDialog;
+import oracle.jdbc.OracleTypes;
 
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 
@@ -173,12 +174,28 @@ public class PlayerThread implements Runnable{
             }
             mReponse.clear();
             question = null;
-            System.out.println( "Answer from question : " + posReaderClient.readLine());
+            String rep = posReaderClient.readLine();
+            System.out.println( "Answer from question : " + rep);
+            if(rep.equalsIgnoreCase("ERR")){
+                CallableStatement stm = Database.getConnection().prepareCall("{? = call PLAYERSPKG.GETAVOIRTEAM}");
+                stm.registerOutParameter(1, OracleTypes.CURSOR);
+                stm.execute();
+                ResultSet rst = (ResultSet) stm.getObject(1);
+                rst.next();
+                int capital = rst.getInt("capital");
+                if(capital >= 2){
+                    stm = Database.getConnection().prepareCall("{call PLAYERSPKG.PAYERCAPITAL(2)}");
+                    stm.execute();
+                }
+                else{
+                    System.out.println("Not enough money. YOU DIED!");
+                    System.exit(0);
+                }
+            }
 
         }
-            catch(IOException ioe){
-            ioe.printStackTrace();
-        }
+        catch (SQLException sqle){sqle.getMessage();}
+        catch(IOException ioe){ioe.printStackTrace();}
 
 
     }

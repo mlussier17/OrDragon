@@ -285,6 +285,7 @@ public class Gameboard extends Application {
                     jThread.start();
                     jThread.join();
                     System.out.println(job.getResponse());
+                    if (!job.getResponse().equalsIgnoreCase("ERR"))Database.pay();
                 } catch (InterruptedException ie) {ie.getMessage();}
             }
         }

@@ -109,12 +109,17 @@ public class Database {
             ResultSet rst = (ResultSet) stm.getObject(1);
             rst.next();
             int capital = rst.getInt("capital");
-            if (capital >= 3) {
-                stm = getConnection().prepareCall("{call PLAYERSPKG.PAYERCAPITAL(3)}");
-                stm.execute();
-                return true;
-            }
-        } catch (SQLException sqle) {}
+            if (capital >= 3)return true;
+        }
+        catch (SQLException sqle) {}
         return false;
+    }
+
+    public static void pay() {
+        try {
+            stm = getConnection().prepareCall("{call PLAYERSPKG.PAYERCAPITAL(3)}");
+            stm.execute();
+        }
+        catch(SQLException sqle){}
     }
 }

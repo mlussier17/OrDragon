@@ -81,7 +81,7 @@ public class ServiceQuestion implements Runnable{
                 writer.println(arrayReponse.get(i));
             writer.flush();
 
-            int rep = Integer.parseInt(reader.readLine());
+            int rep = Integer.parseInt(reader.readLine()) - 1;
             System.out.println("Answer gotten : " + rep);
 
             if(!(rep == goodAnswer)){

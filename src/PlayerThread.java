@@ -5,10 +5,7 @@ import javafx.scene.control.ChoiceDialog;
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 
@@ -101,8 +98,13 @@ public class PlayerThread implements Runnable{
                                           }
                                       });
 
+                 Platform.runLater(() -> {
+                         Gameboard.UpdateStats();
+                 });
+
                  currentJob.done();
              }
+
 
          } catch(NullPointerException npe){
              System.err.println(npe.getMessage());

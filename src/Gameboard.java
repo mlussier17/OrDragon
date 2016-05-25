@@ -5,18 +5,28 @@
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.chart.PieChart;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.shape.Line;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.scene.paint.Color;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import javafx.event.EventHandler;
+import oracle.jdbc.OracleConnection;
+import oracle.jdbc.internal.OracleTypes;
+
+import javax.swing.*;
+import java.sql.CallableStatement;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,12 +34,15 @@ import java.util.Arrays;
 public class Gameboard extends Application {
 
     final static short NOMBRE_BOUTON=4;
-    public final static String TEAM = "LesDieuxGrec3";
+    public final static String TEAM = "zLesDieuxGrec";
     public static String LOCALIP;
     public static PlayerThread pobj;
     private Thread pThread;
     public static Group group;
     public static Boolean playing = false;
+    public static Label Doritos;
+    public static Label Montain;
+    public static Label Piecedor;
 
     public static void main(String[] args) {
         // LOAD SQL DRIVERS
@@ -127,6 +140,48 @@ public class Gameboard extends Application {
                 }
             });
 
+            ///////////////////////////////////////
+
+            Piecedor = new Label();
+            Doritos = new Label();
+            Montain = new Label();
+
+            HBox hbox = new HBox();
+
+            Image image = new Image(Entity.class.getResource("resources/Coin.png").toString());
+            Label label1 = new Label("  ",new ImageView(image));
+            label1.setFont(new Font("Arial",20));
+            label1.setTranslateX(10);
+
+            Piecedor.setText("0");
+            Piecedor.setFont(new Font("Arial",20));
+
+            Image image1 = new Image(Entity.class.getResource("resources/Doritos.png").toString());
+            Label label2 = new Label("  ",new ImageView(image1));
+            label2.setFont(new Font("Arial",20));
+            label2.setTranslateX(50);
+
+            Doritos.setText("0");
+            Doritos.setFont(new Font("Arial",20));
+            Doritos.setTranslateX(40);
+
+            Image image3 = new Image(Entity.class.getResource("resources/MountainDew.png").toString());
+            Label label3 = new Label("  ",new ImageView(image3));
+            label3.setFont(new Font("Arial",20));
+            label3.setTranslateX(100);
+
+            Montain.setText("0");
+            Montain.setFont(new Font("Arial",20));
+            Montain.setTranslateX(90);
+
+            hbox.getChildren().addAll(label1,Piecedor,label2,Doritos,label3,Montain);
+            hbox.setLayoutX(0);
+            hbox.setLayoutY(0);
+
+            group.getChildren().add(hbox);
+
+            ///////////////////////////////////////////
+
             //Position the button bar
             ArrayList<Bouton> arrayBouton =  new ArrayList<>(Arrays.asList(btn1,btn2,btn3,btn4));
             for(int i=0;i < NOMBRE_BOUTON;++i)
@@ -167,10 +222,35 @@ public class Gameboard extends Application {
 
         }
     }
+
+    public static void UpdateStats(){
+        try {
+            CallableStatement stm = Database.getConnection().prepareCall("{?=call PLAYERSPKG.GETAVOIRTEAM}");
+            stm.registerOutParameter(1, OracleTypes.CURSOR);
+            stm.execute();
+
+            ResultSet rest = (ResultSet) stm.getObject(1);
+
+            rest.next();
+
+            Montain.setText(rest.getObject(1).toString());
+            Doritos.setText(rest.getObject(2).toString());
+            Piecedor.setText(rest.getObject(3).toString());
+
+        } catch(Exception ex) {
+
+        }
+    }
+
     // TODO implements functions
     //Bouton Jouer
     private void btn1Click(Bouton source){
         if(source.getText().equalsIgnoreCase("Jouer")) {
+
+            Montain.setText("0");
+            Doritos.setText("0");
+            Piecedor.setText("0");
+
             playing = true;
             PlayerThread.run = true;
             Database.resetStats();

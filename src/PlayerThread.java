@@ -6,7 +6,6 @@ import oracle.jdbc.OracleTypes;
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.sql.*;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -33,25 +32,25 @@ public class PlayerThread implements Runnable{
     private PrintWriter write;
 
     public synchronized void run() {
-         try {
-             InetSocketAddress adress = new InetSocketAddress(Reader.IP, 51007);
-             pSocket = new Socket();
-             pSocket.connect(adress);
+        try {
+            InetSocketAddress adress = new InetSocketAddress(Reader.IP, 51007);
+            pSocket = new Socket();
+            pSocket.connect(adress);
 
-             posReader = new BufferedReader(new InputStreamReader(pSocket.getInputStream()));
-             write = new PrintWriter(new OutputStreamWriter(pSocket.getOutputStream()));
+            posReader = new BufferedReader(new InputStreamReader(pSocket.getInputStream()));
+            write = new PrintWriter(new OutputStreamWriter(pSocket.getOutputStream()));
 
-             // Send HELLO, it's me
-             write.println("HELLO " + Gameboard.TEAM + " " + Gameboard.LOCALIP);
-             write.flush();
-             String tmprep = posReader.readLine();
-             System.out.println("TCP Response -> " + tmprep);
+            // Send HELLO, it's me
+            write.println("HELLO " + Gameboard.TEAM + " " + Gameboard.LOCALIP);
+            write.flush();
+            String tmprep = posReader.readLine();
+            System.out.println("TCP Response -> " + tmprep);
 
-             //Send NODE to get wich node we are on
-             write.println("NODE");
-             write.flush();
-             String tmprep2 = posReader.readLine();
-             System.out.println("TCP Response -> " + tmprep2);
+            //Send NODE to get wich node we are on
+            write.println("NODE");
+            write.flush();
+            String tmprep2 = posReader.readLine();
+            System.out.println("TCP Response -> " + tmprep2);
 
 //             if(run) {
 //                 timer.scheduleAtFixedRate(new TimerTask() {
@@ -66,63 +65,55 @@ public class PlayerThread implements Runnable{
 //                 }, 25000, 25000);
 //             }
 
-             while (run) {
-                 Job currentJob = jobs.take();
+            while (run) {
+                Job currentJob = jobs.take();
 
-                 System.out.println("TCP Command -> " + currentJob.getCommand());
+                System.out.println("TCP Command -> " + currentJob.getCommand());
 
-                 write.println(currentJob.getCommand());
-                 write.flush();
+                write.println(currentJob.getCommand());
+                write.flush();
 
-                 currentJob.setResponse(posReader.readLine());
+                currentJob.setResponse(posReader.readLine());
 
-                 System.out.println("TCP Response -> " + currentJob.getResponse());
+                System.out.println("TCP Response -> " + currentJob.getResponse());
 
-                 if(currentJob.getResponse().startsWith("P")){
-                     conn = Database.getConnection();
-                     CallableStatement stm = conn.prepareCall("{call PLAYERSPKG.AUGMENTERCAPITAL}");
-                     stm.execute();
-                 }
+                if(currentJob.getResponse().startsWith("P")){
+                    conn = Database.getConnection();
+                    CallableStatement stm = conn.prepareCall("{call PLAYERSPKG.AUGMENTERCAPITAL}");
+                    stm.execute();
+                }
 
-                 if(currentJob.getResponse().startsWith("D")){
-                     conn = Database.getConnection();
-                     CallableStatement stm = conn.prepareCall("{call PLAYERSPKG.AUGMENTERDORITOS}");
-                     stm.execute();
-                 }
+                if(currentJob.getResponse().startsWith("D")){
+                    conn = Database.getConnection();
+                    CallableStatement stm = conn.prepareCall("{call PLAYERSPKG.AUGMENTERDORITOS}");
+                    stm.execute();
+                }
 
-                 if(currentJob.getResponse().startsWith("M")){
-                     conn = Database.getConnection();
-                     CallableStatement stm = conn.prepareCall("{call PLAYERSPKG.AUGMENTERDEW}");
-                     stm.execute();
-                 }
+                if(currentJob.getResponse().startsWith("M")){
+                    conn = Database.getConnection();
+                    CallableStatement stm = conn.prepareCall("{call PLAYERSPKG.AUGMENTERDEW}");
+                    stm.execute();
+                }
 
-                 if(currentJob.getResponse().startsWith("IP"))
-                    Platform.runLater(new Runnable() {
-                                          public void run() {
-                                              question(currentJob.getResponse());
-                                          }
-                                      });
+                if(currentJob.getResponse().startsWith("IP")) {
+                    Thread t = new Thread(() -> question(currentJob.getResponse()));
+                    t.start();
+                }
+                currentJob.done();
+            }
 
-                 Platform.runLater(() -> {
-                         Gameboard.UpdateStats();
-                 });
+        } catch(NullPointerException npe){
+            System.err.println(npe.getMessage());
+        }
+        catch (SQLException sqle){
+            System.out.println(sqle.getMessage());
 
-                 currentJob.done();
-             }
+        }
+        catch (InterruptedException ie) {
 
+        } catch (IOException ex) {
 
-         } catch(NullPointerException npe){
-             System.err.println(npe.getMessage());
-         }
-         catch (SQLException sqle){
-             System.out.println(sqle.getMessage());
-
-         }
-         catch (InterruptedException ie) {
-
-         } catch (IOException ex) {
-
-         }
+        }
     }
 
     private void question(String ip){
@@ -163,47 +154,48 @@ public class PlayerThread implements Runnable{
 
             //TODO GET QUESTION ET REPONSE
 
-            mDialogue = new ChoiceDialog(mReponse.get(0),mReponse);
-            mDialogue.setTitle(mTitre);
-            mDialogue.setContentText(question);
-            mDialogue.setHeaderText(question);
+            Platform.runLater(new Runnable() {
+                @Override public void run() {
+                    mDialogue = new ChoiceDialog(mReponse.get(0), mReponse);
+                    mDialogue.setTitle(mTitre);
+                    mDialogue.setContentText(question);
+                    mDialogue.setHeaderText(question);
 
-            Optional<String> reponse = mDialogue.showAndWait();
-            if(reponse.isPresent()){
-                for (int i = 0; i < mReponse.size(); ++i) {
-                    if (mDialogue.getSelectedItem().equals(mReponse.get(i))){
-                        System.out.println(i +1);
-                        writeClient.println(i +1);
-                        writeClient.flush();
+                    Optional<String> reponse = mDialogue.showAndWait();
+                    if (reponse.isPresent()) {
+                        for (int i = 0; i < mReponse.size(); ++i) {
+                            if (mDialogue.getSelectedItem().equals(mReponse.get(i))) {
+                                System.out.println(i + 1);
+                                writeClient.println(i + 1);
+                                writeClient.flush();
+                            }
+                        }
+                    }
+                    mReponse.clear();
+                    question = null;
+                    try {
+                        String rep = posReaderClient.readLine();
+                        System.out.println("Answer from question : " + rep);
+                        if (rep.equalsIgnoreCase("ERR")) {
+                            CallableStatement stm = Database.getConnection().prepareCall("{? = call PLAYERSPKG.GETAVOIRTEAM}");
+                            stm.registerOutParameter(1, OracleTypes.CURSOR);
+                            stm.execute();
+                            ResultSet rst = (ResultSet) stm.getObject(1);
+                            rst.next();
+                            int capital = rst.getInt("capital");
+                            if (capital >= 2) {
+                                stm = Database.getConnection().prepareCall("{call PLAYERSPKG.PAYERCAPITAL(2)}");
+                                stm.execute();
+                            } else {
+                                System.out.println("Not enough money. YOU DIED!");
+                                System.exit(0);
+                            }
+                        }
+                    } catch(Exception ex) {
+
                     }
                 }
-            }
-            mReponse.clear();
-            question = null;
-            String rep = posReaderClient.readLine();
-            System.out.println( "Answer from question : " + rep);
-            if(rep.equalsIgnoreCase("ERR")){
-                CallableStatement stm = Database.getConnection().prepareCall("{? = call PLAYERSPKG.GETAVOIRTEAM}");
-                stm.registerOutParameter(1, OracleTypes.CURSOR);
-                stm.execute();
-                ResultSet rst = (ResultSet) stm.getObject(1);
-                rst.next();
-                int capital = rst.getInt("capital");
-                if(capital >= 2){
-                    stm = Database.getConnection().prepareCall("{call PLAYERSPKG.PAYERCAPITAL(2)}");
-                    stm.execute();
-                }
-                else{
-                    System.out.println("Not enough money. YOU DIED!");
-                    System.exit(0);
-                }
-            }
-
-        }
-        catch (SQLException sqle){sqle.getMessage();}
-        catch(IOException ioe){ioe.printStackTrace();}
-
-
+            });
+        } catch(IOException ioe){ioe.printStackTrace();}
     }
-
 }

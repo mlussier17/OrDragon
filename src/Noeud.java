@@ -32,7 +32,7 @@ public class Noeud extends Circle{
 
         // On button click
         addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-            System.out.println("J'ai clicker -> " + this.getNumber());
+            //System.out.println("J'ai clicker -> " + this.getNumber());
             if(Gameboard.playing) {
                 Job job = new Job("GOTO " + getNumber());
                 JobThread jt = new JobThread(job, Gameboard.pobj);

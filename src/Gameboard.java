@@ -129,7 +129,7 @@ public class Gameboard extends Application {
             btn3.setOnMouseClicked(new EventHandler<MouseEvent>(){
                 @Override
                 public void handle(MouseEvent t){
-                    btn3Click();
+                    btn3Click(btn1);
                 }
             });
             Bouton btn4 = new Bouton(900, 850,"Quitter",4);
@@ -244,7 +244,7 @@ public class Gameboard extends Application {
 
     // TODO implements functions
     //Bouton Jouer
-    private void btn1Click(Bouton source){
+    public void btn1Click(Bouton source){
         if(source.getText().equalsIgnoreCase("Jouer")) {
 
             Montain.setText("0");
@@ -273,19 +273,55 @@ public class Gameboard extends Application {
 
     //Bouton Construire
     private void btn2Click(){
-        if(playing)
-            pobj.jobs.add(new Job("BUILD CHA"));
+        if(playing) {
+            Boolean paying = Database.payAuberge();
+            if (!paying) System.out.println("Not enough gold.");
+            else {
+                Job job = new Job("BUILD CHA");
+                JobThread jt = new JobThread(job, Gameboard.pobj);
+                Thread jThread = new Thread(jt);
+                try {
+                    jThread.setDaemon(true);
+                    jThread.start();
+                    jThread.join();
+                    System.out.println(job.getResponse());
+                } catch (InterruptedException ie) {ie.getMessage();}
+            }
+        }
     }
 
     //Bouton Payer
-    private static void btn3Click(){
-        /*pobj.jobs.add(new Job("NODE"));
-        String node = Job.getResponse();
-        if (Integer.parseInt(node) == 79){
-            Boolean paying = Database.payDoritos();
-            if(paying) pobj.jobs.add(new Job("FREE"));
-            //else //TODO IMPLEMENT
-        }*/
+    private void btn3Click(Bouton source){
+        if(playing) {
+            Job job = new Job("NODE");
+            JobThread jt = new JobThread(job, Gameboard.pobj);
+            Thread jThread = new Thread(jt);
+            try {
+                jThread.setDaemon(true);
+                jThread.start();
+                jThread.join();
+            } catch (InterruptedException ie) {
+
+            }
+            String node = job.getResponse();
+            if (Integer.parseInt(node) == 79) {
+                Boolean paying = Database.payDoritos();
+                if (paying) pobj.jobs.add(new Job("FREE"));
+                else {
+                    System.out.println("Not enough items quitting game.");
+                    btn1Click(source);
+                }
+            } else if (Integer.parseInt(node) == 53) {
+                Boolean paying = Database.payDew();
+                if (paying) pobj.jobs.add(new Job("FREE"));
+                else {
+                    System.out.println("Not enough items quitting game.");
+                    btn1Click(source);
+                }
+            } else {
+                System.out.println("Nothing to pay you rich b*tch.");
+            }
+        }
     }
 
     //Bouton Quitter

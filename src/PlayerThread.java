@@ -6,6 +6,7 @@ import oracle.jdbc.OracleTypes;
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.sql.*;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -102,8 +103,13 @@ public class PlayerThread implements Runnable{
                                           }
                                       });
 
+                 Platform.runLater(() -> {
+                         Gameboard.UpdateStats();
+                 });
+
                  currentJob.done();
              }
+
 
          } catch(NullPointerException npe){
              System.err.println(npe.getMessage());

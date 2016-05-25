@@ -24,7 +24,7 @@ import java.util.Arrays;
 public class Gameboard extends Application {
 
     final static short NOMBRE_BOUTON=4;
-    public final static String TEAM = "LesDieuxGrec3";
+    public final static String TEAM = "zLesdieuxGrec";
     public static String LOCALIP;
     public static PlayerThread pobj;
     private Thread pThread;
@@ -173,7 +173,7 @@ public class Gameboard extends Application {
         if(source.getText().equalsIgnoreCase("Jouer")) {
             playing = true;
             PlayerThread.run = true;
-            Database.resetStats();
+            //Database.resetStats();
             pobj = new PlayerThread();
             pThread = new Thread(pobj);
             pThread.setDaemon(true);

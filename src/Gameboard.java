@@ -5,7 +5,6 @@
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.chart.PieChart;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -16,14 +15,10 @@ import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.scene.paint.Color;
-
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import javafx.event.EventHandler;
-import oracle.jdbc.OracleConnection;
 import oracle.jdbc.internal.OracleTypes;
-
-import javax.swing.*;
 import java.sql.CallableStatement;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -253,7 +248,7 @@ public class Gameboard extends Application {
 
             playing = true;
             PlayerThread.run = true;
-            //Database.resetStats();
+            Database.resetStats();
             pobj = new PlayerThread();
             pThread = new Thread(pobj);
             pThread.setDaemon(true);
